@@ -1,0 +1,15 @@
+.venv/
+.env/
+.vscode/
+.DS_Store
+venv/
+env/
+.idea/
+*.pyc
+*.log
+app/db.sqlite3
+**/migrations/**
+**/__pycache__/**
+old_templates
+old_assets
+# app/app/settings/dev.py
