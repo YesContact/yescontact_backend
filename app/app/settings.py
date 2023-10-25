@@ -145,10 +145,11 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Google auth
 
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -157,5 +158,14 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_URL = 'logout'
 LOGOUT_REDIRECT_URL = 'login'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'YOUR_GOOGLE_CLIENT_ID'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "YOUR_GOOGLE_CLIENT_SECRET"
+# Google auth
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '456592236850-ij618kg8tj4im80a425253n73mvs1ffl.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
+
+# Facebook auth
+
+SOCIAL_AUTH_FACEBOOK_KEY = '774624127805196'
+SOCIAL_AUTH_FACEBOOK_SECRET = '1a36c6257c113e0bb59564c482a9b662'
+
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
