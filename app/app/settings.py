@@ -41,6 +41,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'social_django',
+    'rest_framework'
 ]
 
 CUSTOM_APPS = [
@@ -126,6 +127,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'core.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -148,8 +150,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
-    'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -168,4 +170,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 SOCIAL_AUTH_FACEBOOK_KEY = '774624127805196'
 SOCIAL_AUTH_FACEBOOK_SECRET = '1a36c6257c113e0bb59564c482a9b662'
 
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+# SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': ['email'],
+        'METHOD': 'js_sdk',  # or 'oauth2'
+        # ... other settings
+    }
+}
