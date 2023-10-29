@@ -157,8 +157,8 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # Google auth
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '456592236850-ij618kg8tj4im80a425253n73mvs1ffl.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '456592236850-26irb7c4ksett5es67qluajbi7dg5rn1.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 
 # Facebook auth
 
