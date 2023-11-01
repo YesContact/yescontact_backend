@@ -41,7 +41,8 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'social_django',
-    'rest_framework'
+    'rest_framework',
+    "rest_framework_swagger",
 ]
 
 CUSTOM_APPS = [
@@ -173,4 +174,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'METHOD': 'js_sdk',  # or 'oauth2'
         # ... other settings
     }
+}
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
+    # ... other settings
 }
