@@ -8,7 +8,7 @@ from .serializers import *
 urlpatterns = [
     path('login', login, name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
-    path('register', UserRegistrationApiView.as_view(), name='register'),
+    path('register', UserRegistrationViewSet.as_view({'get': 'list', 'post': 'create',}), name='register'),
     path('', home, name='home'),
-    path('contacts', ContactList.as_view(), name='contacts'),
+    path('contacts', ContactList.as_view({'get': 'list', 'post': 'create',}), name='contacts'),
 ]

@@ -1,2 +1,2 @@
-from .registration import UserRegistrationApiView
+from .registration import UserRegistrationViewSet
 from .contacts import ContactList

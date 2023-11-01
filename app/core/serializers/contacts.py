@@ -4,4 +4,4 @@ from core.models import Contact
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = '__all__'
+        fields = ['id', 'first_name', 'last_name', 'phone_number']

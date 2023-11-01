@@ -1,7 +1,6 @@
 from django.db import models
 from app.utils.base_model import BaseModel
 
-
 class Contact(BaseModel):
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
