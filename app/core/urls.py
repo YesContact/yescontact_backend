@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     path('register', UserRegistrationApiView.as_view(), name='register'),
     path('', home, name='home'),
+    path('contacts', ContactList.as_view(), name='contacts'),
 ]
