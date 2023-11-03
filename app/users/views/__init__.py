@@ -1,1 +1,1 @@
-from .sign_up import login, home
+from .social_auth import login, home
