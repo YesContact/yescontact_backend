@@ -20,6 +20,7 @@ urlpatterns = [
     path("social-auth/", include("social_django.urls", namespace="social")),
     path("user/", include("users.urls.views"), name="user"),
     path("api/", include("users.urls.apis"), name="api"),
+    path("core/", include("core.urls"), name="core"),
     path(
         "api-docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
