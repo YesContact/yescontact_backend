@@ -201,3 +201,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sebnemadil1999@gmail.com'
 EMAIL_HOST_PASSWORD = 'szhlclkyzbguxuhk'
 EMAIL_PORT = 587
+
+# Swagger
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
+    # ... other settings
+}
