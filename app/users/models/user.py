@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField('İstifadəçinin əlaqə nömrəsi', max_length=20, unique=True)
     email = models.EmailField('İstifadəçinin email ünvanı', unique=True)
     password = models.CharField('İstifadəçinin parolu', max_length=100)
+    conf_password = models.CharField('İstifadəçinin parolu təsdiqi', max_length=100, null=True, blank=True)
     created_at = models.DateTimeField('İstifadəçinin yaradılma tarixi', auto_now_add=True, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password', 'phone_number']
