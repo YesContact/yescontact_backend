@@ -24,7 +24,7 @@ class UserRegistrationApiView(CreateAPIView):
 
 
 class UserLoginAPIView(APIView):
-    permission_classes = (IsAuthenticated, )
+    serializer_class = UserLoginSerializer
 
     def post(self,request): 
         phone_number = request.data.get('phone_number',None)
@@ -43,7 +43,7 @@ class UserLoginAPIView(APIView):
         else:
             message = "Invalid login details."
             return Response({"message": message , "code": 500, 'data': {}})
-
+            
 
 class PasswordResetAPI(APIView):
     permission_classes = (IsAuthenticated, )
