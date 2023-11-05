@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -16,11 +15,12 @@ schema_view = get_schema_view(
     public=True,
 )
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('social-auth/', include('social_django.urls', namespace='social')),
-    path('', include('core.urls'), name='user'),
+    path("admin/", admin.site.urls),
+    path("social-auth/", include("social_django.urls", namespace="social")),
+    path("user/", include("users.urls.views"), name="user"),
+    path("api/", include("users.urls.apis"), name="api"),
+    path("core/", include("core.urls"), name="core"),
     path(
         "api-docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
