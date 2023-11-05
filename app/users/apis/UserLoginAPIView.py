@@ -10,7 +10,7 @@ from users.serializers import UserLoginSerializer
 
 
 class UserLoginAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    serializer_class = UserLoginSerializer
 
     def post(self, request):
         phone_number = request.data.get("phone_number", None)
