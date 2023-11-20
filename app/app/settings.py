@@ -43,6 +43,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'social_django',
     'rest_framework',
+    'corsheaders',
     'rest_framework_simplejwt'
 ]
 
@@ -52,6 +53,23 @@ CUSTOM_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://yescontact.azgpen.com",
+    "http://75.119.147.165"
+]
+CORS_ALLOWED_ORIGINS = [
+    "https://yescontact.azgpen.com",
+    "http://75.119.147.165"
+]
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
