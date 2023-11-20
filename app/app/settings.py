@@ -43,6 +43,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'social_django',
     'rest_framework',
+    'corsheaders',
     'rest_framework_simplejwt'
 ]
 
@@ -52,6 +53,23 @@ CUSTOM_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://yescontact.azgpen.com",
+    "http://75.119.147.165"
+]
+CORS_ALLOWED_ORIGINS = [
+    "https://yescontact.azgpen.com",
+    "http://75.119.147.165"
+]
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -152,6 +170,34 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+LOGGING_DIR = os.path.join(BASE_DIR, 'logs')  # Define the directory for logs
+
+if not os.path.exists(LOGGING_DIR):
+    os.makedirs(LOGGING_DIR)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "app",
+        },
+    },
+    "formatters": {
+        "app": {
+            "format": (
+                "%(asctime)s [%(levelname)-8s]" "(%(module)s.%(funcName)s) %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "INFO"},
+    },
+}
+
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
