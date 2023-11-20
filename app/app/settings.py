@@ -177,23 +177,27 @@ if not os.path.exists(LOGGING_DIR):
     os.makedirs(LOGGING_DIR)
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGGING_DIR, 'error.log'),
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "app",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
+    "formatters": {
+        "app": {
+            "format": (
+                "%(asctime)s [%(levelname)-8s]" "(%(module)s.%(funcName)s) %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "INFO"},
     },
 }
+
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
