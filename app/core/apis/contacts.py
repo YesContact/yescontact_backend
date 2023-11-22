@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from core.models import Contact
 
-# Import the serializer you created
 from core.serializers import ContactSerializer
 
 from rest_framework import viewsets
