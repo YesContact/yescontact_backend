@@ -44,7 +44,9 @@ THIRD_PARTY_APPS = [
     'social_django',
     'rest_framework',
     'corsheaders',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_otp', 
+    'django_otp.plugins.otp_totp',
 ]
 
 CUSTOM_APPS = [
@@ -79,7 +81,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware'
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -245,8 +248,8 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'sebnemadil1999@gmail.com'
-EMAIL_HOST_PASSWORD = 'szhlclkyzbguxuhk'
+EMAIL_HOST_USER = 'feridabd37@gmail.com'
+EMAIL_HOST_PASSWORD = 'lmvy hbkc fgnx zeor'
 EMAIL_PORT = 587
 
 # Swagger
