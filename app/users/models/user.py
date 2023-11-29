@@ -13,9 +13,9 @@ class CustomUser(AbstractUser):
     password_confirm = models.CharField('İstifadəçinin parolu təsdiqi', max_length=100, null=True, blank=True)
     otp = models.CharField('OTP', max_length=6, null=True, blank=True)
     created_at = models.DateTimeField('İstifadəçinin yaradılma tarixi', auto_now_add=True, null=True, blank=True)
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['password', 'phone_number']
-    username = None
+    USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = ['password', 'full_name']
+    username = models.CharField('İstifadəçinin istifadəçi adı', max_length=100, null=True, blank=True)
     
     objects = UserManager()
 

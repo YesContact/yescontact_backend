@@ -1,35 +1,33 @@
-from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser
-from django.contrib.auth.forms import PasswordResetForm
-
 from users.serializers import UserLoginSerializer
+from rest_framework_simplejwt.tokens import AccessToken
 
-
-class UserLoginAPIView(APIView):
+class UserLoginViewSet(viewsets.ViewSet):
     serializer_class = UserLoginSerializer
 
-    def post(self, request):
-        phone_number = request.data.get("phone_number", None)
-        password = request.data.get("password", None)
-        if phone_number and password:
-            user_obj = CustomUser.objects.filter(
-                phone_number__iexact=phone_number
-            ).first()
+    def create(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data.get("phone_number")
+            password = serializer.validated_data.get("password")
+
+            user_obj = CustomUser.objects.filter(phone_number__iexact=phone_number).first()
 
             if user_obj and user_obj.check_password(password):
-                user = UserLoginSerializer(user_obj)
-                data_list = {}
-                data_list.update(user.data)
-                return Response(
-                    {"message": "Login Successfully", "data": data_list, "code": 200}
-                )
+                access_token = AccessToken.for_user(user_obj)
+                serializer = UserLoginSerializer(user_obj)
+                data = serializer.data
+
+                return Response({
+                    "message": "Login Successfully",
+                    "token": str(access_token),
+                    "data": data,
+                    "code": 200
+                })
             else:
-                message = "Unable to login with given credentials"
-                return Response({"message": message, "code": 500, "data": {}})
+                message = "Invalid phone number or password"
+                return Response({"message": message, "code": 401})  # Unauthorized status code
         else:
-            message = "Invalid login details."
-            return Response({"message": message, "code": 500, "data": {}})
+            return Response(serializer.errors, status=400)
