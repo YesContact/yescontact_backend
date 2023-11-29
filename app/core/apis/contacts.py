@@ -9,7 +9,11 @@ from core.serializers import ContactSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
@@ -23,7 +27,7 @@ class ContactList(viewsets.ModelViewSet):
         queryset = Contact.objects.all()
         serializer = ContactSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def create(self, request, *args, **kwargs):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():

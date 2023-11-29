@@ -8,7 +8,8 @@ from django.contrib.auth.forms import PasswordResetForm
 
 from users.serializers import UserRegistrationSerializer
 from django.conf import settings
-from app.utils import generate_otp, send_otp_email 
+from app.utils import generate_otp, send_otp_email
+
 
 class UserRegistrationApiView(CreateAPIView):
     serializer_class = UserRegistrationSerializer

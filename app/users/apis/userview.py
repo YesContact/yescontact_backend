@@ -13,7 +13,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 class UserViewSet(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = (IsAuthenticated,)
-    
+
     def get(self, request):
         user = request.user
         serializer = UserLoginSerializer(user)

@@ -11,17 +11,17 @@ class OTPVerificationAPI(CreateAPIView):
     serializer_class = OTPVerificationSerializer
 
     def post(self, request):
-        email = request.data.get('email')
-        otp = request.data.get('otp')
+        email = request.data.get("email")
+        otp = request.data.get("otp")
 
         try:
             user = CustomUser.objects.get(email=email)
         except CustomUser.DoesNotExist:
-            return Response({'message': 'User not found'}, status=404)
+            return Response({"message": "User not found"}, status=404)
 
         if user.otp == otp:
             user.is_verified = True  # Mark user as verified
             user.save()
-            return Response({'message': 'OTP verified successfully'})
+            return Response({"message": "OTP verified successfully"})
         else:
-            return Response({'message': 'Invalid OTP'}, status=400)
+            return Response({"message": "Invalid OTP"}, status=400)

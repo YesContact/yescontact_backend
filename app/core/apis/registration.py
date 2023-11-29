@@ -2,7 +2,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from core.models import CustomUser  # Import your custom user model
-from core.serializers import UserRegistrationSerializer  # Import your user registration serializer
+from core.serializers import (
+    UserRegistrationSerializer,
+)  # Import your user registration serializer
+
 
 class UserRegistrationViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()  # Specify the queryset for your user model
@@ -25,5 +28,3 @@ class UserRegistrationViewSet(ModelViewSet):
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    

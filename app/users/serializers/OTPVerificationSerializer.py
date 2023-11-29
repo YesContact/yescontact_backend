@@ -8,4 +8,4 @@ class OTPVerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'otp']
+        fields = ["email", "otp"]
