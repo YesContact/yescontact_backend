@@ -11,6 +11,8 @@ from drf_yasg.utils import swagger_auto_schema
 import jwt, datetime
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from schemas.core_users_schema import who_saved_mn_list_responses_swagger_schema, who_saved_mn_create_responses_swagger_schema
+
 User = get_user_model()
 
 
@@ -19,8 +21,10 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = ContactSerializer
 
+    @who_saved_mn_list_responses_swagger_schema()
     def list(self, request):
         user = request.user
+        print(user)
         phone_number = user.phone_number
 
         search_results = Contact.objects.filter(phone_number=phone_number)
@@ -31,6 +35,7 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
         ]
         return Response(filtered_data)
 
+    @who_saved_mn_create_responses_swagger_schema()
     def create(self, request):
         user = request.user
         phone_number = user.phone_number

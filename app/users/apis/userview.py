@@ -9,11 +9,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from schemas.userview_schema import userview_swagger_schema
+
 
 class UserViewSet(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = (IsAuthenticated,)
 
+    @userview_swagger_schema()
     def get(self, request):
         user = request.user
         serializer = UserLoginSerializer(user)

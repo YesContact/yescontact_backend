@@ -4,12 +4,14 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser
 from users.serializers import OTPVerificationSerializer
+from schemas.otp_verification_schema import otp_verification_swagger_schema
 
 
 class OTPVerificationAPI(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OTPVerificationSerializer
 
+    @otp_verification_swagger_schema()
     def post(self, request):
         email = request.data.get("email")
         otp = request.data.get("otp")

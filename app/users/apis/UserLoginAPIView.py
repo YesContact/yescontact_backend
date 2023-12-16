@@ -1,16 +1,19 @@
-from rest_framework import viewsets
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import AccessToken
 from users.models import CustomUser
 from users.serializers import UserLoginSerializer
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.permissions import AllowAny
+from schemas.user_login_schema import user_login_swagger_schema
 
 
-class UserLoginViewSet(viewsets.ViewSet):
+class UserLoginViewSet(generics.GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
 
-    def create(self, request):
+    @user_login_swagger_schema()
+    def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             phone_number = serializer.validated_data.get("phone_number")

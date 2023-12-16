@@ -7,10 +7,13 @@ from django.contrib.auth.forms import PasswordResetForm
 
 from users.serializers import PasswordResetSerializer
 
+from schemas.password_reset_schema import password_reset_swagger_schema
+
 
 class PasswordResetAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @password_reset_swagger_schema()
     def post(self, request):
         serializer = PasswordResetSerializer(data=request.data)
 
