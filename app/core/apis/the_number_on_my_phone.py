@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from core.models import Contact
 from core.serializers import ContactSerializer
 
-
 User = get_user_model()
+
 
 class TheNumbersOnMyPhone(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
