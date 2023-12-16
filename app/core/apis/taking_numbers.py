@@ -10,10 +10,14 @@ from core.models import Contact
 from core.serializers import ContactSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 class TakingNumbersViewSet(viewsets.ModelViewSet):
     serializer_class = ContactSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(
         manual_parameters=[

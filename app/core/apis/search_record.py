@@ -5,7 +5,7 @@ from core.models import SearchRecord
 from core.serializers import SearchRecordSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-class SearchRecordViewSet(viewsets.ModelViewSet):
+class SearchRecordViewSet(viewsets.ViewSet):
     serializer_class = SearchRecordSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]

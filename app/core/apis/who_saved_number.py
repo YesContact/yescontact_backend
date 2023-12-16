@@ -14,7 +14,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 User = get_user_model()
 
 
-class WhoSavedMNViewSet(viewsets.ModelViewSet):
+class WhoSavedMNViewSet(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = (IsAuthenticated,)
     serializer_class = ContactSerializer
