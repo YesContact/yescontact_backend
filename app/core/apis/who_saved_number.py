@@ -24,7 +24,6 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
     @who_saved_mn_list_responses_swagger_schema()
     def list(self, request):
         user = request.user
-        print(user)
         phone_number = user.phone_number
 
         search_results = Contact.objects.filter(phone_number=phone_number)
