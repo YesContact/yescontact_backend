@@ -1,4 +1,4 @@
-def send_notification(search_query):
+def send_notification(receiver_user, search_query):
     # This is a placeholder for your notification logic
     # Replace this with your actual notification mechanism
     
