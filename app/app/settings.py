@@ -54,7 +54,8 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [
     'users',
-    "core"
+    "core",
+    "survey"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -118,6 +119,17 @@ DATABASES = {
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'mydb',
+#         'USER': 'myuser',
+#         'PASSWORD': 'mypassword',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -247,10 +259,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',   
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-    'rest_framework.permissions.AllowAny',
-    'rest_framework.permissions.IsAuthenticated',
-    
-),
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
+
+    ),
 }
 
 SIMPLE_JWT = {
