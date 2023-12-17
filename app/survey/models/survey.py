@@ -36,7 +36,7 @@ class Survey(models.Model):
         verbose_name_plural = "Surveys"
 
     def __str__(self):
-        return self.survey_id
+        return f'<Survey {self.title}>'
 
 
 

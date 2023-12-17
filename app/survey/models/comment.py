@@ -9,7 +9,8 @@ class Comment(models.Model):
         'self',
         on_delete=models.CASCADE,
         null=True,
-        related_name="user_parent_comment"
+        related_name="user_parent_comment",
+        blank=True
     )
 
     user = models.ForeignKey(

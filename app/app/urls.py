@@ -21,7 +21,7 @@ urlpatterns = [
     path("user/", include("users.urls.views"), name="user"),
     path("api/", include("users.urls.apis"), name="api"),
     path("core/", include("core.urls"), name="core"),
-    path("survey_api/", include("survey.urls"), name="survey"),
+    path("survey-api/", include("survey.urls"), name="survey"),
     path(
         "api-docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
