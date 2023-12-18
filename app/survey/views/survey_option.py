@@ -52,8 +52,12 @@ class CreateSurveyApiView(CreateAPIView):
         responses={200: CreateSurveyApiSerializer}
     )
     def post(self, request, *args, **kwargs):
-        new_survey = Survey.objects.create(
-        deadline=timezone.now() + timedelta(days=1)
-    )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        new_survey = serializer.save(
+            deadline=timezone.now() + timedelta(days=1)
+        )
+
         expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
         return super().post(request, *args, **kwargs)
