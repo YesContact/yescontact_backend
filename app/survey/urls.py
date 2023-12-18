@@ -29,5 +29,5 @@ urlpatterns = [
     ),
     path("show-view-count/", ShowViewCountApiView.as_view(), name="show-view-count"),
     path("share-survey/", ShareSurveyAPIView.as_view(), name="share-survey"),
-    path("set-voice_limit/", SetVoteLimitAPIView.as_view(), name="set-limit"),
+    path("set-vote_limit/", SetVoteLimitAPIView.as_view(), name="set-limit"),
 ]
