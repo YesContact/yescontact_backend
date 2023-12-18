@@ -7,6 +7,8 @@ class SurveyOption(models.Model):
     title = models.CharField(max_length=100, null=False)
     image = models.BinaryField(null=True)
 
+    options = models.IntegerField(default=2)
+
     survey = models.ForeignKey(
         "survey.Survey",
         on_delete=models.CASCADE,
