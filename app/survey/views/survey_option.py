@@ -1,10 +1,12 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
-
+from rest_framework.generics import ListAPIView, CreateAPIView
+from datetime import timedelta
+from django.utils import timezone
+from ..tasks import expire_survey
 from ..models import SurveyOption, Survey
-from ..serializers import SurveyOptionApiSerializer
+from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
 
 
 class SurveyOptionApiView(ListAPIView):
@@ -39,3 +41,19 @@ class SurveyOptionApiView(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class CreateSurveyApiView(CreateAPIView):
+    queryset = SurveyOption.objects.all()
+    serializer_class = CreateSurveyApiSerializer
+
+    @swagger_auto_schema(
+        request_body=CreateSurveyApiSerializer,
+        responses={200: CreateSurveyApiSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        new_survey = Survey.objects.create(
+        deadline=timezone.now() + timedelta(days=1)
+    )
+        expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
+        return super().post(request, *args, **kwargs)

@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import *
-from .apis import *
-from .serializers import *
+from core.views import *
+from core.apis import *
+from core.serializers import *
 from users.apis import *
 from rest_framework.routers import DefaultRouter
 
