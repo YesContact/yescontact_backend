@@ -17,7 +17,7 @@ class Survey(models.Model):
     paid = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
 
-    voice_limit = models.IntegerField(default=0)
+    vote_limit = models.IntegerField(default=0)
     view_count = models.IntegerField(default=0)
 
     start_time = models.DateTimeField()
