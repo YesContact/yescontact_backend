@@ -3,8 +3,8 @@ from ..models import SurveyOption
 
 class VoteLimitSerializer(serializers.Serializer):
     survey_id = serializers.IntegerField()
-    voice_limit = serializers.IntegerField()
+    vote_limit = serializers.IntegerField()
 
     class Meta:
         model = SurveyOption
-        fields = ['survey_id', 'voice_limit']
+        fields = ['survey_id', 'vote_limit']
