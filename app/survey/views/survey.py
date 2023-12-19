@@ -1,9 +1,9 @@
 from django.db.models import Q
-from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView
+
 from ..models import Survey, SurveyOption
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
 
@@ -49,7 +49,7 @@ class SurveyDetailView(UpdateAPIView):
     serializer_class = SurveyDetailSerializer
 
     @swagger_auto_schema(tags=['Api Survey'])
-    def put(self, request, *args, **kwargs):
+    def update_survey(self, request, *args, **kwargs):
         survey_id = kwargs.get('pk')
 
         try:
@@ -65,30 +65,20 @@ class SurveyDetailView(UpdateAPIView):
                     if not status:
                         raise ValidationError('End date is smaller than Start date')
 
-        except Survey.DoesNotExist:
-            raise ValidationError('Survey not found')
-        return super().put(request, *args, **kwargs)
-
-    @swagger_auto_schema(tags=['Api Survey'])
-    def patch(self, request, *args, **kwargs):
-        survey_id = kwargs.get('pk')
-
-        try:
-            survey = Survey.objects.get(pk=survey_id)
-            survey.update_start_time()
-
-            active_status = request.data.get('active')
-            end_time = request.data.get('end_time')
-
-            if active_status or survey.active:
-                if end_time:
-                    status = survey.check_date_difference(end_time=end_time)
-                    if not status:
-                        raise ValidationError('End date is smaller than Start date')
+                survey_options = SurveyOption.objects.filter(survey=survey).count()
+                if survey_options < 2:
+                    raise ValidationError('Options for survey are less than the minimum 2')
 
         except Survey.DoesNotExist:
             raise ValidationError('Survey not found')
-        return super().patch(request, *args, **kwargs)
+
+        if request.method == 'PUT':
+            return super().put(request, *args, **kwargs)
+        elif request.method == 'PATCH':
+            return super().patch(request, *args, **kwargs)
+
+    put = update_survey
+    patch = update_survey
 
 
 class CreateSurveyApiView(CreateAPIView):
