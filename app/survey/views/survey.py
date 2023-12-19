@@ -8,8 +8,6 @@ from rest_framework.response import Response
 from ..models import Survey, SurveyOption
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
 
-SurveyDetailSerializer
-
 
 class SurveyApiView(ListAPIView):
     queryset = Survey.objects.filter(active=True)
