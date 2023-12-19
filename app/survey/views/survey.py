@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from ..models import Survey, SurveyOption
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
 
+SurveyDetailSerializer
+
 
 class SurveyApiView(ListAPIView):
     queryset = Survey.objects.filter(active=True)
@@ -49,6 +51,12 @@ class SurveyDetailView(RetrieveUpdateAPIView):
     queryset = Survey.objects.all()
     serializer_class = SurveyDetailSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return SurveyDetailSerializer
+        else:
+            return SurveyApiSerializer
+
     @swagger_auto_schema(tags=['Api Survey'])
     def update_survey(self, request, *args, **kwargs):
         survey_id = kwargs.get('pk')
@@ -84,9 +92,6 @@ class SurveyDetailView(RetrieveUpdateAPIView):
     @swagger_auto_schema(tags=['Api Survey'])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-        # survey_instance = self.get_object()
-        # serializer = self.get_serializer(survey_instance)
-        # return Response(serializer.data)
 
 
 class CreateSurveyApiView(CreateAPIView):
