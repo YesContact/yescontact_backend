@@ -2,13 +2,14 @@ from django.db.models import Q
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import ListAPIView
-from ..models import Survey
-from ..serializers import SurveyApiSerializer
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, CreateAPIView
+from ..models import Survey, SurveyOption
+from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
 
 
 class SurveyApiView(ListAPIView):
-    queryset = Survey.objects.all()
+    queryset = Survey.objects.filter(active=True)
     serializer_class = SurveyApiSerializer
 
     def get_queryset(self):
@@ -36,7 +37,79 @@ class SurveyApiView(ListAPIView):
                 type=openapi.TYPE_STRING
             ),
         ],
-        responses={200: SurveyApiSerializer(many=True)}
+        responses={200: SurveyApiSerializer(many=True)},
+        tags=['Api Survey']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class SurveyDetailView(UpdateAPIView):
+    queryset = Survey.objects.all()
+    serializer_class = SurveyDetailSerializer
+
+    @swagger_auto_schema(tags=['Api Survey'])
+    def put(self, request, *args, **kwargs):
+        survey_id = kwargs.get('pk')
+
+        try:
+            survey = Survey.objects.get(pk=survey_id)
+            survey.update_start_time()
+
+            active_status = request.data.get('active')
+            end_time = request.data.get('end_time')
+
+            if active_status or survey.active:
+                if end_time:
+                    status = survey.check_date_difference(end_time=end_time)
+                    if not status:
+                        raise ValidationError('End date is smaller than Start date')
+
+        except Survey.DoesNotExist:
+            raise ValidationError('Survey not found')
+        return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['Api Survey'])
+    def patch(self, request, *args, **kwargs):
+        survey_id = kwargs.get('pk')
+
+        try:
+            survey = Survey.objects.get(pk=survey_id)
+            survey.update_start_time()
+
+            active_status = request.data.get('active')
+            end_time = request.data.get('end_time')
+
+            if active_status or survey.active:
+                if end_time:
+                    status = survey.check_date_difference(end_time=end_time)
+                    if not status:
+                        raise ValidationError('End date is smaller than Start date')
+
+        except Survey.DoesNotExist:
+            raise ValidationError('Survey not found')
+        return super().patch(request, *args, **kwargs)
+
+
+class CreateSurveyApiView(CreateAPIView):
+    queryset = SurveyOption.objects.all()
+    serializer_class = CreateSurveyApiSerializer
+
+    @swagger_auto_schema(
+        request_body=CreateSurveyApiSerializer,
+        responses={200: CreateSurveyApiSerializer},
+        tags=['Api Survey']
+    )
+    def post(self, request, *args, **kwargs):
+        # serializer = self.get_serializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
+
+        # new_survey = serializer.save(
+        #     deadline=timezone.now() + timedelta(days=1)
+        # )
+
+        # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
+        return super().post(request, *args, **kwargs)
+
+

@@ -1,6 +1,9 @@
 import secrets
+from datetime import datetime
 
+import pytz
 from django.db import models
+from django.utils import timezone
 
 
 def generate_custom_token():
@@ -20,7 +23,7 @@ class Survey(models.Model):
     vote_limit = models.IntegerField(default=0)
     view_count = models.IntegerField(default=0)
 
-    start_time = models.DateTimeField()
+    start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField()
 
     user = models.ForeignKey(
@@ -38,8 +41,10 @@ class Survey(models.Model):
     def __str__(self):
         return f'<Survey {self.title}>'
 
+    def update_start_time(self):
+        self.start_time = timezone.now()
 
-
-
-
+    def check_date_difference(self, end_time):
+        date_object = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
+        return date_object >= self.start_time
 
