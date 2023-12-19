@@ -1,9 +1,18 @@
 from rest_framework import serializers
-from ..models import Survey
+from rest_framework.fields import SerializerMethodField
+
+from ..models import Survey, SurveyOption
 
 
 class SurveyApiSerializer(serializers.ModelSerializer):
     # view_count = serializers.SerializerMethodField(source='get_view_count', read_only=True)
+    options = SerializerMethodField()
+
+    def get_options(self, obj):
+        from . import SurveyOptionApiSerializer
+        options = SurveyOption.objects.filter(survey=obj).all()
+        serializer = SurveyOptionApiSerializer(options, many=True)
+        return serializer.data
 
     class Meta:
         model = Survey
@@ -33,8 +42,6 @@ class CreateSurveyApiSerializer(serializers.ModelSerializer):
     #     if len(options) > 15:
     #         raise serializers.ValidationError("Survey can have at most 15 options.")
     #     return options
-
-
 
     def create(self, validated_data):
         # options_data = validated_data.pop('options')

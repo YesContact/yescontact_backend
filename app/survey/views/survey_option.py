@@ -43,32 +43,33 @@ class SurveyOptionApiView(ListAPIView):
                 required=True
             ),
         ],
-        responses={200: SurveyOptionApiSerializer(many=True)}
+        responses={200: SurveyOptionApiSerializer(many=True)},
+        tags=['Api Survey Option']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
 
-class CreateSurveyApiView(CreateAPIView):
-    queryset = SurveyOption.objects.all()
-    serializer_class = CreateSurveyApiSerializer
-
-    @swagger_auto_schema(
-        request_body=CreateSurveyApiSerializer,
-        responses={200: CreateSurveyApiSerializer},
-        tags=['Api Survey']
-    )
-    def post(self, request, *args, **kwargs):
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
-
-        # new_survey = serializer.save(
-        #     deadline=timezone.now() + timedelta(days=1)
-        # )
-
-        # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
-        return super().post(request, *args, **kwargs)
+# class CreateSurveyApiView(CreateAPIView):
+#     queryset = SurveyOption.objects.all()
+#     serializer_class = CreateSurveyApiSerializer
+#
+#     @swagger_auto_schema(
+#         request_body=CreateSurveyApiSerializer,
+#         responses={200: CreateSurveyApiSerializer},
+#         tags=['Api Survey']
+#     )
+#     def post(self, request, *args, **kwargs):
+#         # serializer = self.get_serializer(data=request.data)
+#         # serializer.is_valid(raise_exception=True)
+#         # serializer.save()
+#
+#         # new_survey = serializer.save(
+#         #     deadline=timezone.now() + timedelta(days=1)
+#         # )
+#
+#         # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
+#         return super().post(request, *args, **kwargs)
 
 
 class CreateSurveyOptionApiView(CreateAPIView):

@@ -2,7 +2,8 @@ from django.db.models import Q
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.response import Response
 
 from ..models import Survey, SurveyOption
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
@@ -44,7 +45,7 @@ class SurveyApiView(ListAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class SurveyDetailView(UpdateAPIView):
+class SurveyDetailView(RetrieveUpdateAPIView):
     queryset = Survey.objects.all()
     serializer_class = SurveyDetailSerializer
 
@@ -79,6 +80,13 @@ class SurveyDetailView(UpdateAPIView):
 
     put = update_survey
     patch = update_survey
+
+    @swagger_auto_schema(tags=['Api Survey'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+        # survey_instance = self.get_object()
+        # serializer = self.get_serializer(survey_instance)
+        # return Response(serializer.data)
 
 
 class CreateSurveyApiView(CreateAPIView):
