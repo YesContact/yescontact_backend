@@ -11,9 +11,10 @@ from survey.views import (
     ShareSurveyAPIView,
     SetVoteLimitAPIView,
     SurveyDetailView,
-    CreateSurveyOptionApiView
+    CreateSurveyOptionApiView,
+    SurveyGetViewApi,
+    AddSurveyViewApi
 )
-
 
 urlpatterns = [
     path("surveys/", SurveyApiView.as_view(), name="surveys"),
@@ -35,5 +36,8 @@ urlpatterns = [
     path("set-vote_limit/", SetVoteLimitAPIView.as_view(), name="set-limit"),
 
     path('survey/<int:pk>/', SurveyDetailView.as_view(), name='survey-detail'),
-    path('create-survey-option', CreateSurveyOptionApiView.as_view(), name='create-survey-option,')
+    path('create-survey-option/', CreateSurveyOptionApiView.as_view(), name='create-survey-option,'),
+
+    path('get-survey-views/', SurveyGetViewApi.as_view(), name='get-survey-views'),
+    path('add-survey-view/', AddSurveyViewApi.as_view(), name='add-survey-view'),
 ]
