@@ -5,12 +5,12 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Survey, Comment
-from ..serializers import SurveyCommentApiSerializer
+from ..serializers import CreateSurveyCommentApiSerializer, CommentTreeSerializer
 
 
 class SurveyCommentApiView(ListAPIView):
     queryset = Comment.objects.all()
-    serializer_class = SurveyCommentApiSerializer
+    serializer_class = CommentTreeSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -22,7 +22,7 @@ class SurveyCommentApiView(ListAPIView):
         if not exist_survey.exists():
             raise ValidationError('Survey with this id not found')
 
-        queryset = queryset.filter(survey=exist_survey.first())
+        queryset = queryset.filter(survey=exist_survey.first(), parent_comment=None)
 
         return queryset
 
@@ -36,7 +36,7 @@ class SurveyCommentApiView(ListAPIView):
                 required=True
             ),
         ],
-        responses={200: SurveyCommentApiSerializer(many=True)},
+        responses={200: CommentTreeSerializer(many=True)},
         tags=['Api Survey Comment']
     )
     def get(self, request, *args, **kwargs):
@@ -45,7 +45,7 @@ class SurveyCommentApiView(ListAPIView):
 
 class SurveyCommentCreateAPIView(CreateAPIView):
     queryset = Comment.objects.all()
-    serializer_class = SurveyCommentApiSerializer
+    serializer_class = CreateSurveyCommentApiSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
