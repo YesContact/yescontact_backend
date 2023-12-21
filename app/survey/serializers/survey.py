@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from ..models import Survey, SurveyOption
+from ..models import Survey, SurveyOption, SurveyView
 
 
 class SurveyApiSerializer(serializers.ModelSerializer):
     # view_count = serializers.SerializerMethodField(source='get_view_count', read_only=True)
     options = SerializerMethodField()
+    views_count = serializers.SerializerMethodField()
 
     def get_options(self, obj):
         from . import SurveyOptionApiSerializer
@@ -14,9 +15,13 @@ class SurveyApiSerializer(serializers.ModelSerializer):
         serializer = SurveyOptionApiSerializer(options, many=True)
         return serializer.data
 
+    def get_views_count(self, obj):
+        return SurveyView.objects.filter(survey=obj).count()
+
     class Meta:
         model = Survey
-        fields = '__all__'
+        exclude = ['view_count']
+        # fields = '__all__'
 
 
 class SurveyDetailSerializer(serializers.ModelSerializer):

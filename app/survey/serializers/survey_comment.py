@@ -85,3 +85,21 @@ class CreateSurveyCommentApiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+    def validate(self, data):
+        text = data.get('text')
+        parent_comment = data.get('parent_comment')
+        survey = data.get('survey')
+        user = data.get('user')
+
+        exists_comment = Comment.objects.filter(parent_comment=parent_comment, survey=survey, user=user)
+        if exists_comment:
+            raise serializers.ValidationError("Your comment is already exists.")
+
+        # Проверка на наличие комментария
+        # if not text:
+        #     raise serializers.ValidationError("Комментарий не может быть пустым.")
+
+        # Другие проверки, которые вы хотите добавить
+
+        return data
