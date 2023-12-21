@@ -1,7 +1,8 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from ..models import Survey, Comment
 from ..serializers import SurveyCommentApiSerializer
@@ -35,7 +36,21 @@ class SurveyCommentApiView(ListAPIView):
                 required=True
             ),
         ],
-        responses={200: SurveyCommentApiSerializer(many=True)}
+        responses={200: SurveyCommentApiSerializer(many=True)},
+        tags=['Api Survey Comment']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class SurveyCommentCreateAPIView(CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = SurveyCommentApiSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @swagger_auto_schema(tags=['Api Survey Comment'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

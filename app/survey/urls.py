@@ -13,7 +13,8 @@ from survey.views import (
     SurveyDetailView,
     CreateSurveyOptionApiView,
     SurveyGetViewApi,
-    AddSurveyViewApi
+    AddSurveyViewApi,
+    SurveyCommentCreateAPIView
 )
 
 urlpatterns = [
@@ -25,6 +26,9 @@ urlpatterns = [
         name="create-survey-option",
     ),
     path("survey-comments/", SurveyCommentApiView.as_view(), name="survey-comments"),
+    path("create-survey-comment/", SurveyCommentCreateAPIView.as_view(), name='create-survey-comment'),
+
+
     path("survey-likes/", SurveyLikeApiView.as_view(), name="survey-likes"),
     path(
         "survey-comment-likes/",
