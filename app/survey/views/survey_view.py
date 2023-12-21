@@ -29,9 +29,13 @@ class SurveyGetViewApi(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         survey_id = self.request.query_params.get('survey_id')
+        survey = Survey.objects.filter(id=survey_id).first()
 
         if not survey_id:
             raise ValidationError('Survey ID is missing in query parameters')
+
+        if not survey:
+            raise ValidationError('Survey with this id not found')
 
         queryset = SurveyView.objects.filter(survey=survey_id)
         count = queryset.count()

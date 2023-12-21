@@ -15,7 +15,8 @@ from survey.views import (
     SurveyGetViewApi,
     AddSurveyViewApi,
     SurveyCommentCreateAPIView,
-    CreateSurveyCommentLikeApiView
+    CreateSurveyCommentLikeApiView,
+    AddSurveyLikeApiView
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path("create-survey-comment/", SurveyCommentCreateAPIView.as_view(), name='create-survey-comment'),
 
     path("survey-likes/", SurveyLikeApiView.as_view(), name="comment-likes"),
+    path("add-survey-like", AddSurveyLikeApiView.as_view(), name='add-survey-like'),
 
     path("add-comment-like/", CreateSurveyCommentLikeApiView.as_view(), name='add-comment-like'),
     # path("survey-likes/", SurveyLikeApiView.as_view(), name="survey-likes"),
@@ -38,9 +40,9 @@ urlpatterns = [
         SurveyCommentLikeApiView.as_view(),
         name="survey-comment-likes",
     ),
-    path("show-view-count/", ShowViewCountApiView.as_view(), name="show-view-count"),
-    path("share-survey/", ShareSurveyAPIView.as_view(), name="share-survey"),
-    path("set-vote_limit/", SetVoteLimitAPIView.as_view(), name="set-limit"),
+    # path("show-view-count/", ShowViewCountApiView.as_view(), name="show-view-count"),
+    # path("share-survey/", ShareSurveyAPIView.as_view(), name="share-survey"),
+    # path("set-vote_limit/", SetVoteLimitAPIView.as_view(), name="set-limit"),
 
     path('survey/<int:pk>/', SurveyDetailView.as_view(), name='survey-detail'),
     path('create-survey-option/', CreateSurveyOptionApiView.as_view(), name='create-survey-option,'),

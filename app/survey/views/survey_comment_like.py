@@ -43,9 +43,13 @@ class SurveyCommentLikeApiView(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         comment_id = self.request.query_params.get('comment_id')
+        comment = Comment.objects.filter(id=comment_id).first()
 
         if not comment_id:
             raise ValidationError('Comment ID is missing in query parameters')
+
+        if not comment:
+            raise ValidationError('Comment with this id not found')
 
         queryset = CommentLike.objects.filter(comment=comment_id)
         count = queryset.count()
