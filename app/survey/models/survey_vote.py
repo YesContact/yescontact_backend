@@ -12,6 +12,14 @@ class SurveyVote(models.Model):
         related_name="vote_survey_option",
     )
 
+    survey = models.ForeignKey(
+        "survey.Survey",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="vote_survey"
+    )
+
     user = models.ForeignKey(
         "users.CustomUser",
         on_delete=models.CASCADE,

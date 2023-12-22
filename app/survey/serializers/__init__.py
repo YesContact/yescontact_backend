@@ -7,3 +7,4 @@ from .share_survey import ShareSurveyApiSerializer
 from .vote_limit import VoteLimitSerializer
 from .view_count import ShowViewCountSerializer
 from .survey_view import SurveyViewApiSerializer
+from .survey_vote import SurveyVoteApiSerializer
