@@ -23,6 +23,8 @@ class SurveyUserCreateView(generics.CreateAPIView):
 class SurveyUserListView(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = SurveyUserListSerializer
+    permission_classes = [IsAuthenticated]
+
 
     # @extend_schema(tags=['Api Survey User'])
     # # @swagger_auto_schema(tags=['Api Survey User'])

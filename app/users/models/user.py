@@ -24,6 +24,7 @@ class CustomUser(AbstractUser):
 
     objects = UserManager()
     survey_count = models.IntegerField(default=0)
+    description = models.TextField(max_length=1000)
 
     # user_bio = models.OneToOneField("users.UserBio", on_delete=models.CASCADE, null=True, blank=True)
 
