@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, permissions
@@ -9,22 +10,29 @@ from ..models import Survey, SurveyVote, SurveyOption
 from ..serializers import SurveyVoteApiSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to get by survey_option_id', required=True),
+    ],
+    responses={200: SurveyVoteApiSerializer(many=True)},
+    tags=['Api Survey Vote']
+)
 class GetSurveyVoteApi(APIView):
     # permission_classes = [permissions.IsAuthenticated]
     # authentication_classes = [JWTAuthentication]
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_option_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey option to add new vote",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={201: SurveyVoteApiSerializer},
-        tags=['Api Survey Vote']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_option_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey option to add new vote",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={201: SurveyVoteApiSerializer},
+    #     tags=['Api Survey Vote']
+    # )
     def get(self, request, *args, **kwargs):
         survey_option_id = self.request.query_params.get('survey_option_id')
         try:
@@ -46,20 +54,27 @@ class GetSurveyVoteApi(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to add new vote', required=True),
+    ],
+    responses={201: SurveyVoteApiSerializer},
+    tags=['Api Survey Vote']
+)
 class AddSurveyVoteApi(APIView):
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_option_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey option to add new vote",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={201: SurveyVoteApiSerializer},
-        tags=['Api Survey Vote']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_option_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey option to add new vote",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={201: SurveyVoteApiSerializer},
+    #     tags=['Api Survey Vote']
+    # )
     def post(self, request, *args, **kwargs):
         survey_option_id = self.request.query_params.get('survey_option_id')
         try:

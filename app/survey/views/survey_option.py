@@ -36,7 +36,7 @@ from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
 # )
 @extend_schema(
     parameters=[
-        OpenApiParameter(name='survey_id', type=int, description='Custom parameter description', required=True),
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to get all options', required=True),
     ],
     responses={200: SurveyOptionApiSerializer(many=True)},
     tags=['Api Survey Option']

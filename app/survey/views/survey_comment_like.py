@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -10,6 +11,14 @@ from ..models import Survey, CommentLike, Comment
 from ..serializers import SurveyCommentLikeApiSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='comment_id', type=int, description='Specify id of comment to get all likes',
+                         required=True),
+    ],
+    responses={200: SurveyCommentLikeApiSerializer(many=True)},
+    tags=['Api Survey Comment Like']
+)
 class SurveyCommentLikeApiView(ListAPIView):
     queryset = CommentLike.objects.all()
     serializer_class = SurveyCommentLikeApiSerializer
@@ -28,19 +37,19 @@ class SurveyCommentLikeApiView(ListAPIView):
     #
     #     return queryset
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'comment_id',
-                openapi.IN_QUERY,
-                description="Specify id of comment to get all likes",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={200: SurveyCommentLikeApiSerializer(many=True)},
-        tags=['Api Survey Comment Like']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'comment_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of comment to get all likes",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={200: SurveyCommentLikeApiSerializer(many=True)},
+    #     tags=['Api Survey Comment Like']
+    # )
     def get(self, request, *args, **kwargs):
         comment_id = self.request.query_params.get('comment_id')
         comment = Comment.objects.filter(id=comment_id).first()
@@ -62,20 +71,28 @@ class SurveyCommentLikeApiView(ListAPIView):
         # return super().get(request, *args, **kwargs)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='comment_id', type=int, description='Specify id of comment to add new like',
+                         required=True),
+    ],
+    responses={200: SurveyCommentLikeApiSerializer},
+    tags=['Api Survey Comment Like']
+)
 class CreateSurveyCommentLikeApiView(APIView):
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'comment_id',
-                openapi.IN_QUERY,
-                description="Specify id of comment to add new like",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={201: SurveyCommentLikeApiSerializer},
-        tags=['Api Survey Comment Like']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'comment_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of comment to add new like",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={201: SurveyCommentLikeApiSerializer},
+    #     tags=['Api Survey Comment Like']
+    # )
     def post(self, request, *args, **kwargs):
         comment_id = self.request.query_params.get('comment_id')
         try:

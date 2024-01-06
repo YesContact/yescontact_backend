@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
@@ -9,6 +10,14 @@ from ..models import Survey, Like
 from ..serializers import SurveyLikeApiSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to get all likes',
+                         required=True),
+    ],
+    responses={200: SurveyLikeApiSerializer(many=True)},
+    tags=['Api Survey Like']
+)
 class SurveyLikeApiView(ListAPIView):
     queryset = Like.objects.all()
     serializer_class = SurveyLikeApiSerializer
@@ -27,19 +36,19 @@ class SurveyLikeApiView(ListAPIView):
     #
     #     return queryset
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey to get all likes",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={200: SurveyLikeApiSerializer(many=True)},
-        tags=['Api Survey Like']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey to get all likes",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={200: SurveyLikeApiSerializer(many=True)},
+    #     tags=['Api Survey Like']
+    # )
     def get(self, request, *args, **kwargs):
         survey_id = self.request.query_params.get('survey_id')
 
@@ -62,20 +71,28 @@ class SurveyLikeApiView(ListAPIView):
         # return super().get(request, *args, **kwargs)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to add new like',
+                         required=True),
+    ],
+    responses={200: SurveyLikeApiSerializer(many=True)},
+    tags=['Api Survey Like']
+)
 class AddSurveyLikeApiView(APIView):
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey to add new like",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={201: SurveyLikeApiSerializer},
-        tags=['Api Survey Like']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey to add new like",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={201: SurveyLikeApiSerializer},
+    #     tags=['Api Survey Like']
+    # )
     def post(self, request, *args, **kwargs):
         survey_id = self.request.query_params.get('survey_id')
         try:

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -10,23 +11,32 @@ from ..models import SurveyView, Survey
 from ..serializers import SurveyViewApiSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to get count of views',
+                         required=True),
+    ],
+    responses={200: openapi.Schema(type=openapi.TYPE_OBJECT,
+                                   properties={'count': openapi.Schema(type=openapi.TYPE_INTEGER)})},
+    tags=['Api Survey View']
+)
 class SurveyGetViewApi(ListAPIView):
     serializer_class = SurveyViewApiSerializer
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey to get count of views",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={200: openapi.Schema(type=openapi.TYPE_OBJECT,
-                                       properties={'count': openapi.Schema(type=openapi.TYPE_INTEGER)})},
-        tags=['Api Survey View']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey to get count of views",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={200: openapi.Schema(type=openapi.TYPE_OBJECT,
+    #                                    properties={'count': openapi.Schema(type=openapi.TYPE_INTEGER)})},
+    #     tags=['Api Survey View']
+    # )
     def get(self, request, *args, **kwargs):
         survey_id = self.request.query_params.get('survey_id')
         survey = Survey.objects.filter(id=survey_id).first()
@@ -47,20 +57,28 @@ class SurveyGetViewApi(ListAPIView):
         return Response(response_data)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to add new view',
+                         required=True),
+    ],
+    responses={201: SurveyViewApiSerializer},
+    tags=['Api Survey View']
+)
 class AddSurveyViewApi(APIView):
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey to add new view",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={201: SurveyViewApiSerializer},
-        tags=['Api Survey View']
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_id',
+    #             openapi.IN_QUERY,
+    #             description="Specify id of survey to add new view",
+    #             type=openapi.TYPE_INTEGER,
+    #             required=True
+    #         ),
+    #     ],
+    #     responses={201: SurveyViewApiSerializer},
+    #     tags=['Api Survey View']
+    # )
     def post(self, request, *args, **kwargs):
         survey_id = self.request.query_params.get('survey_id')
         try:
