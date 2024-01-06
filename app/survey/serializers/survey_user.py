@@ -64,3 +64,5 @@ class SurveyUserDetailSerializer(serializers.ModelSerializer):
         if request:
             client_ip_address = request.META.get('REMOTE_ADDR')
             return f'http://{client_ip_address}/static/{settings.USER_PROFILE_IMAGES}/{obj.profile_photo}'
+        else:
+            return None
