@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -19,13 +20,18 @@ class TakingNumbersViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "user_id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER
-            )
-        ]
-    )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             "user_id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER
+    #         )
+    #     ]
+    # )
+    # @extend_schema(request={"user_id": ""})
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name='user_id', type=int, description='Specify id of user', required=True),
+    ])
     def list(self, request, *args, **kwargs):
         user_id = request.query_params.get("user_id", None)
         if user_id:

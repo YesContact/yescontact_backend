@@ -1,5 +1,4 @@
 from drf_spectacular.utils import extend_schema
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 
 from survey.serializers import SurveyUserCreateSerializer, SurveyUserListSerializer, SurveyUserDetailSerializer
