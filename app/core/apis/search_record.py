@@ -1,11 +1,10 @@
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from app.utils import send_notification, perform_search_action
-from core.models import SearchRecord
-from core.serializers import SearchRecordSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from schemas.search_record_schema import search_record_create_responses_swagger_schema
+from app.utils import perform_search_action
+from core.serializers import SearchRecordSerializer
 
 
 class SearchRecordViewSet(viewsets.ViewSet):
@@ -13,7 +12,14 @@ class SearchRecordViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
-    @search_record_create_responses_swagger_schema()
+    @extend_schema(
+        request=SearchRecordSerializer,
+        responses={
+            200: OpenApiResponse(
+                response={"description": "Success", "example": {"message": "Search record created successfully"}},
+                description="Success"),
+        }
+    )
     def create(self, request):
         # search_query = request.data.get('search_query')
         user1 = request.user

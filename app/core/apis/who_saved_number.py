@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets
@@ -21,7 +22,12 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = ContactSerializer
 
-    @who_saved_mn_list_responses_swagger_schema()
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(response={"description": "Success", "example": {"full_name": "Contact's full name"}},
+                                 description="Success"),
+        }
+    )
     def list(self, request):
         user = request.user
         phone_number = user.phone_number
@@ -34,7 +40,14 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
         ]
         return Response(filtered_data)
 
-    @who_saved_mn_create_responses_swagger_schema()
+    @extend_schema(
+        request=ContactSerializer,
+        responses={
+            200: OpenApiResponse(response={"description": "Success", "example": {"full_name": "Contact's full name"}},
+                                 description="Success"),
+        }
+    )
+    # @who_saved_mn_create_responses_swagger_schema()
     def create(self, request):
         user = request.user
         phone_number = user.phone_number
