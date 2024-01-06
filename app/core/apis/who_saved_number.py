@@ -1,18 +1,12 @@
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth import get_user_model
-from core.models import Contact
-from core.serializers import ContactSerializer
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-import jwt, datetime
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from schemas.core_users_schema import who_saved_mn_list_responses_swagger_schema, who_saved_mn_create_responses_swagger_schema
+from core.models import Contact
+from core.serializers import ContactSerializer
 
 User = get_user_model()
 
