@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.renderers import MultiPartRenderer
 from rest_framework.templatetags import rest_framework
 from users.models import CustomUser  # Import your custom user model
@@ -15,6 +17,30 @@ from ..models import SurveyOption, Survey
 from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
 
 
+# @extend_schema(
+#     parameters=[
+#         {
+#             'name': 'survey_id',
+#             'type': 'integer',
+#             'in': 'query',
+#             'description': 'Specify id of survey to get all options',
+#             'required': True,
+#             'schema': {
+#                 'type': 'integer',
+#                 'format': 'int32'
+#             }
+#         }
+#     ],
+#     responses={200: SurveyOptionApiSerializer(many=True)},
+#     tags=['Api Survey Option']
+# )
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Custom parameter description', required=True),
+    ],
+    responses={200: SurveyOptionApiSerializer(many=True)},
+    tags=['Api Survey Option']
+)
 class SurveyOptionApiView(ListAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = SurveyOptionApiSerializer
@@ -33,19 +59,6 @@ class SurveyOptionApiView(ListAPIView):
 
         return queryset
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_id',
-                openapi.IN_QUERY,
-                description="Specify id of survey to get all options",
-                type=openapi.TYPE_INTEGER,
-                required=True
-            ),
-        ],
-        responses={200: SurveyOptionApiSerializer(many=True)},
-        tags=['Api Survey Option']
-    )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -72,20 +85,10 @@ class SurveyOptionApiView(ListAPIView):
 #         return super().post(request, *args, **kwargs)
 
 
+@extend_schema(tags=['Api Survey Option'])
 class CreateSurveyOptionApiView(CreateAPIView):
     """
         Go to this endpoint to upload image_file of option
     """
     queryset = SurveyOption.objects.all()
     serializer_class = CreateSurveyOptionApiSerializer
-
-    @swagger_auto_schema(
-        request_body=CreateSurveyOptionApiSerializer,
-        responses={200: CreateSurveyOptionApiSerializer},
-        tags=['Api Survey Option']
-    )
-    def post(self, request, *args, **kwargs):
-        # serializer = self.get_serializer(data=request.data)
-        # if serializer.is_valid():
-        return super().post(request, *args, **kwargs)
-

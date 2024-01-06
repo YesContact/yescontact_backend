@@ -1,4 +1,5 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
@@ -9,6 +10,7 @@ from ..models import Survey, SurveyOption
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
 
 
+@extend_schema(tags=['Api Survey'])
 class SurveyApiView(ListAPIView):
     queryset = Survey.objects.filter(active=True)
     serializer_class = SurveyApiSerializer
@@ -29,22 +31,23 @@ class SurveyApiView(ListAPIView):
 
         return queryset
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'survey_type',
-                openapi.IN_QUERY,
-                description="Surveys type (free, paid), If you want all don't specify this field",
-                type=openapi.TYPE_STRING
-            ),
-        ],
-        responses={200: SurveyApiSerializer(many=True)},
-        tags=['Api Survey']
-    )
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             'survey_type',
+    #             openapi.IN_QUERY,
+    #             description="Surveys type (free, paid), If you want all don't specify this field",
+    #             type=openapi.TYPE_STRING
+    #         ),
+    #     ],
+    #     responses={200: SurveyApiSerializer(many=True)},
+    #     tags=['Api Survey']
+    # )
+    # def get(self, request, *args, **kwargs):
+    #     return super().get(request, *args, **kwargs)
 
 
+@extend_schema(tags=['Api Survey'])
 class SurveyDetailView(RetrieveUpdateAPIView):
     queryset = Survey.objects.all()
     serializer_class = SurveyDetailSerializer
@@ -55,7 +58,7 @@ class SurveyDetailView(RetrieveUpdateAPIView):
         else:
             return SurveyApiSerializer
 
-    @swagger_auto_schema(tags=['Api Survey'])
+    # @swagger_auto_schema(tags=['Api Survey'])
     def update_survey(self, request, *args, **kwargs):
         survey_id = kwargs.get('pk')
 
@@ -87,33 +90,29 @@ class SurveyDetailView(RetrieveUpdateAPIView):
     put = update_survey
     patch = update_survey
 
-    @swagger_auto_schema(tags=['Api Survey'])
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    # @swagger_auto_schema(tags=['Api Survey'])
+    # def get(self, request, *args, **kwargs):
+    #     return super().get(request, *args, **kwargs)
 
 
+@extend_schema(tags=['Api Survey'])
 class CreateSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreateSurveyApiSerializer
 
-    @swagger_auto_schema(
-        request_body=CreateSurveyApiSerializer,
-        responses={200: CreateSurveyApiSerializer},
-        tags=['Api Survey']
-    )
-    def post(self, request, *args, **kwargs):
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
+    # @swagger_auto_schema(
+    #     request_body=CreateSurveyApiSerializer,
+    #     responses={200: CreateSurveyApiSerializer},
+    #     tags=['Api Survey']
+    # )
+    # def post(self, request, *args, **kwargs):
+    # serializer = self.get_serializer(data=request.data)
+    # serializer.is_valid(raise_exception=True)
+    # serializer.save()
 
-        # new_survey = serializer.save(
-        #     deadline=timezone.now() + timedelta(days=1)
-        # )
+    # new_survey = serializer.save(
+    #     deadline=timezone.now() + timedelta(days=1)
+    # )
 
-        # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
-        return super().post(request, *args, **kwargs)
-
-
-
-
-
+    # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
+    # return super().post(request, *args, **kwargs)

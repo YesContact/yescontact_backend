@@ -4,6 +4,11 @@ from django.db import models
 from core.models import Contact
 from .user_manager import UserManager
 
+
+# class UserBio(models.Model):
+#
+#     pass
+
 class CustomUser(AbstractUser):
     full_name = models.CharField('İstifadəçinin adı, soyadı', max_length=100)
     phone_number = models.CharField('İstifadəçinin əlaqə nömrəsi', max_length=20, unique=True)
@@ -16,8 +21,11 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password', 'full_name']
     username = models.CharField('İstifadəçinin istifadəçi adı', max_length=100, null=True, blank=True)
-    
+
     objects = UserManager()
+    survey_count = models.IntegerField(default=0)
+
+    # user_bio = models.OneToOneField("users.UserBio", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = ('İstifadəçi')
@@ -25,4 +33,3 @@ class CustomUser(AbstractUser):
 
     def __str__(self) -> str:
         return self.full_name
-
