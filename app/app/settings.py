@@ -176,8 +176,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+USER_PROFILE_IMAGES = 'user_data/user_profiles'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    USER_PROFILE_IMAGES
 ]
 
 STATIC_URL = '/static/'

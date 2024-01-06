@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from core.models import Contact
@@ -8,6 +9,11 @@ from .user_manager import UserManager
 # class UserBio(models.Model):
 #
 #     pass
+
+# def validate_profile_image(value):
+#     filesize = value.size
+#     if filesize > 5242880:  # Укажите максимальный размер файла в байтах (в данном случае, 5 МБ)
+#         raise ValidationError("File is too big. Максимальный размер файла 5 МБ.")
 
 class CustomUser(AbstractUser):
     full_name = models.CharField('İstifadəçinin adı, soyadı', max_length=100)
@@ -26,6 +32,7 @@ class CustomUser(AbstractUser):
     # survey_count = models.IntegerField(default=0)
     description = models.TextField(max_length=1000)
     # vote_count = models.IntegerField(default=0)
+    profile_photo = models.FilePathField(path='user_data/user_profiles', match=r".*\.(jpg|jpeg|png)$", default="default.png")
 
     # user_bio = models.OneToOneField("users.UserBio", on_delete=models.CASCADE, null=True, blank=True)
 
