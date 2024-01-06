@@ -6,7 +6,8 @@ from users.models import CustomUser
 class SurveyUserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['first_name', 'last_name', 'full_name', 'phone_number', 'email', 'username']
+        # fields = '__all__'
         # fields = '__all__'
 
 
@@ -20,4 +21,4 @@ class SurveyUserListSerializer(serializers.ModelSerializer):
 class SurveyUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['first_name', 'last_name', 'full_name', 'phone_number', 'email', 'username']

@@ -1,12 +1,15 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
+from survey.permissions import IsOwnerOrReadOnlyUser
 from survey.serializers import SurveyUserCreateSerializer, SurveyUserListSerializer, SurveyUserDetailSerializer
 from users.models import CustomUser
 
 
 @extend_schema(tags=['Api Survey User'])
 class SurveyUserCreateView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
     queryset = CustomUser.objects.all()
     serializer_class = SurveyUserCreateSerializer
 
@@ -28,9 +31,10 @@ class SurveyUserListView(generics.ListAPIView):
 
 
 @extend_schema(tags=['Api Survey User'])
-class SurveyUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+class SurveyUserDetailView(generics.RetrieveUpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = SurveyUserDetailSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyUser]
 
     # Применение декоратора ко всем методам в классе
     # for method in http_method_names:
