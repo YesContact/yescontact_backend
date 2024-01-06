@@ -23,8 +23,9 @@ class CustomUser(AbstractUser):
     username = models.CharField('İstifadəçinin istifadəçi adı', max_length=100, null=True, blank=True)
 
     objects = UserManager()
-    survey_count = models.IntegerField(default=0)
+    # survey_count = models.IntegerField(default=0)
     description = models.TextField(max_length=1000)
+    # vote_count = models.IntegerField(default=0)
 
     # user_bio = models.OneToOneField("users.UserBio", on_delete=models.CASCADE, null=True, blank=True)
 
