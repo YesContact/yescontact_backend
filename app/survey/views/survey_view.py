@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from ..models import SurveyView, Survey
 from ..serializers import SurveyViewApiSerializer
@@ -65,7 +66,9 @@ class SurveyGetViewApi(ListAPIView):
     responses={201: SurveyViewApiSerializer},
     tags=['Api Survey View']
 )
-class AddSurveyViewApi(APIView):
+class AddSurveyViewApi(GenericAPIView):
+    serializer_class = SurveyViewApiSerializer
+
     # @swagger_auto_schema(
     #     manual_parameters=[
     #         openapi.Parameter(

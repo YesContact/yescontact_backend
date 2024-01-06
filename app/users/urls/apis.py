@@ -13,5 +13,5 @@ urlpatterns = [
     path("password_reset/", PasswordResetAPI.as_view(), name="password_reset_api"),
     path("otp_verification/", OTPVerificationAPI.as_view(), name="otp_verification_api"),
     path('user-view/', UserViewSet.as_view({'get': 'get'}), name='user-view'),
-    path('logout/', LogoutViewSet.as_view({'post': 'post'}), name='logout'),
+    path('logout/', LogoutViewSet.as_view(), name='logout'),
 ]

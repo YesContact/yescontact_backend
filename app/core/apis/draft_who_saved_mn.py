@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -11,11 +12,16 @@ class WhoSavedViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "phone_number", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER
-            )
+    # @swagger_auto_schema(
+    #     manual_parameters=[
+    #         openapi.Parameter(
+    #             "phone_number", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER
+    #         )
+    #     ]
+    # )
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name='phone_number', type=int, description='Specify the phone number', required=True),
         ]
     )
     def list(self, request, *args, **kwargs):

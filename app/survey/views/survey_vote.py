@@ -4,6 +4,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from ..models import Survey, SurveyVote, SurveyOption
@@ -61,7 +62,9 @@ class GetSurveyVoteApi(APIView):
     responses={201: SurveyVoteApiSerializer},
     tags=['Api Survey Vote']
 )
-class AddSurveyVoteApi(APIView):
+class AddSurveyVoteApi(GenericAPIView):
+    serializer_class = SurveyVoteApiSerializer
+
     # @swagger_auto_schema(
     #     manual_parameters=[
     #         openapi.Parameter(
