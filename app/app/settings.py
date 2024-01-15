@@ -338,15 +338,16 @@ EMAIL_HOST_PASSWORD = 'lmvy hbkc fgnx zeor'
 EMAIL_PORT = 587
 
 # Swagger
-SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
-    # ... other settings
-}
+# SWAGGER_SETTINGS = {
+#     'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
+#     # ... other settings
+# }
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Api System',
     'DESCRIPTION': 'Test',
     'VERSION': '1.0',
     'SCHEMA_PATH_FUNC': 'main.views.schema_view',
-    # ...
+    'COMPONENT_SPLIT_REQUEST': True,
 }
+
