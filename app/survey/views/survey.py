@@ -1,13 +1,18 @@
 from django.db.models import Q
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ..models import Survey, SurveyOption
-from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, CreatePaidSurveyApiSerializer
+from ..permissions import IsOwnerOrReadOnlyUser
+from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, \
+    CreatePaidSurveyApiSerializer
 
 
 @extend_schema(tags=['Api Survey'])
@@ -117,19 +122,16 @@ class CreatePaidSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreatePaidSurveyApiSerializer
 
-    # @swagger_auto_schema(
-    #     request_body=CreateSurveyApiSerializer,
-    #     responses={200: CreateSurveyApiSerializer},
-    #     tags=['Api Survey']
-    # )
-    # def post(self, request, *args, **kwargs):
-    # serializer = self.get_serializer(data=request.data)
-    # serializer.is_valid(raise_exception=True)
-    # serializer.save()
 
-    # new_survey = serializer.save(
-    #     deadline=timezone.now() + timedelta(days=1)
-    # )
-
-    # expire_survey.apply_async((new_survey.id,), eta=new_survey.deadline)
-    # return super().post(request, *args, **kwargs)
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to start',
+                         required=True),
+    ],
+    responses={200: SurveyApiSerializer},
+    tags=['Api Survey']
+)
+class StartSurveyApiView(APIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyUser]
+    def post(self, request, *args, **kwargs):
+        return Response({"message": "POST request processed"}, status=status.HTTP_200_OK)
