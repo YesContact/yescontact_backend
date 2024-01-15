@@ -18,7 +18,14 @@ class Survey(models.Model):
     description = models.CharField(max_length=1000, null=False)
 
     paid = models.BooleanField(default=False)
+    payment = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, default="ready_to_start", choices=[
+        ("ready_to_start", "Ready to start"),
+        ("active", "Active"),
+        ("expired", "Expired"),
+        ("aborted", "Aborted"),
+    ])
 
     vote_limit = models.IntegerField(default=0)
     view_count = models.IntegerField(default=0)

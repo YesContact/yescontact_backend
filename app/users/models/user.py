@@ -33,6 +33,7 @@ class CustomUser(AbstractUser):
     description = models.TextField(max_length=1000)
     # vote_count = models.IntegerField(default=0)
     profile_photo = models.FilePathField(path='user_data/user_profiles', match=r".*\.(jpg|jpeg|png)$", default="default.png")
+    wallet = models.IntegerField(default=0)
 
     # user_bio = models.OneToOneField("users.UserBio", on_delete=models.CASCADE, null=True, blank=True)
 
