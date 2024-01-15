@@ -6,12 +6,14 @@ from survey.views import (
     SurveyCommentApiView,
     SurveyLikeApiView,
     SurveyCommentLikeApiView,
-    CreateSurveyApiView,
+    CreateFreeSurveyApiView,
+    CreatePaidSurveyApiView,
     # ShowViewCountApiView,
     # ShareSurveyAPIView,
     # SetVoteLimitAPIView,
     SurveyDetailView,
     CreateSurveyOptionApiView,
+    SurveyOptionDetailView,
     SurveyGetViewApi,
     AddSurveyViewApi,
     SurveyCommentCreateAPIView,
@@ -33,9 +35,14 @@ urlpatterns = [
     path("surveys/", SurveyApiView.as_view(), name="surveys"),
     path("survey-options/", SurveyOptionApiView.as_view(), name="survey-options"),
     path(
-        "create-survey/",
-        CreateSurveyApiView.as_view(),
-        name="create-survey-option",
+        "create-free-survey/",
+        CreateFreeSurveyApiView.as_view(),
+        name="create-survey",
+    ),
+    path(
+        "create-paid-survey/",
+        CreatePaidSurveyApiView.as_view(),
+        name="create-survey",
     ),
     path("survey-comments/", SurveyCommentApiView.as_view(), name="survey-comments"),
     path("create-survey-comment/", SurveyCommentCreateAPIView.as_view(), name='create-survey-comment'),
@@ -56,6 +63,8 @@ urlpatterns = [
 
     path('survey/<int:pk>/', SurveyDetailView.as_view(), name='survey-detail'),
     path('create-survey-option/', CreateSurveyOptionApiView.as_view(), name='create-survey-option,'),
+
+    path('survey-option/<int:pk>/', SurveyOptionDetailView.as_view(), name='survey-option-detail'),
 
     path('get-survey-views/', SurveyGetViewApi.as_view(), name='get-survey-views'),
     path('add-survey-view/', AddSurveyViewApi.as_view(), name='add-survey-view'),

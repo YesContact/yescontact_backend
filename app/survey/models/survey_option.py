@@ -6,7 +6,8 @@ class SurveyOption(models.Model):
 
     title = models.CharField(max_length=100, null=False, blank=False)
 
-    image_file = models.FileField(upload_to='uploads/')
+    # image_file = models.FileField(upload_to='uploads/')
+    image = models.ImageField(upload_to='uploads/options/', null=False)
     # image_path = models.FilePathField(path='uploads/')
 
     # options = models.IntegerField(default=2)

@@ -30,3 +30,10 @@ class CreateSurveyOptionApiSerializer(serializers.ModelSerializer):
         survey_option = SurveyOption.objects.create(**validated_data)
         return survey_option
 
+
+class SurveyOptionDetailApiSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyOption
+        fields = '__all__'
+
+

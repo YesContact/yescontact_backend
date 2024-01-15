@@ -12,7 +12,7 @@ def generate_custom_token():
 
 class Survey(models.Model):
     id = models.AutoField(primary_key=True, unique=True, null=False, blank=False)
-    survey_id = models.TextField(unique=True, default=generate_custom_token)
+    survey_id = models.CharField(unique=True, default=generate_custom_token, max_length=500)
 
     title = models.CharField(max_length=300, null=False)
     description = models.CharField(max_length=1000, null=False)
@@ -33,6 +33,9 @@ class Survey(models.Model):
         blank=False,
         related_name="user_surveys",
     )
+
+    cost = models.IntegerField(null=False)
+
 
     class Meta:
         verbose_name = "Survey"

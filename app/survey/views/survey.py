@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, R
 from rest_framework.response import Response
 
 from ..models import Survey, SurveyOption
-from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
+from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, CreatePaidSurveyApiSerializer
 
 
 @extend_schema(tags=['Api Survey'])
@@ -68,6 +68,7 @@ class SurveyDetailView(RetrieveUpdateAPIView):
 
             active_status = request.data.get('active')
             end_time = request.data.get('end_time')
+            cost = request.data.get('cost')
 
             if active_status or survey.active:
                 if end_time:
@@ -78,6 +79,16 @@ class SurveyDetailView(RetrieveUpdateAPIView):
                 survey_options = SurveyOption.objects.filter(survey=survey).count()
                 if survey_options < 2:
                     raise ValidationError('Options for survey are less than the minimum 2')
+
+                if not survey.cost and not cost:
+                    raise ValidationError('Cost specified is required')
+
+                if not 10 <= cost <= 3000:
+                    raise ValidationError('Cost must be between 10 and 3000')
+
+
+
+
 
         except Survey.DoesNotExist:
             raise ValidationError('Survey not found')
@@ -96,9 +107,15 @@ class SurveyDetailView(RetrieveUpdateAPIView):
 
 
 @extend_schema(tags=['Api Survey'])
-class CreateSurveyApiView(CreateAPIView):
+class CreateFreeSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
-    serializer_class = CreateSurveyApiSerializer
+    serializer_class = CreateFreeSurveyApiSerializer
+
+
+@extend_schema(tags=['Api Survey'])
+class CreatePaidSurveyApiView(CreateAPIView):
+    queryset = SurveyOption.objects.all()
+    serializer_class = CreatePaidSurveyApiSerializer
 
     # @swagger_auto_schema(
     #     request_body=CreateSurveyApiSerializer,

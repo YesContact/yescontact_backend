@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
 from ..models import Survey, SurveyOption, SurveyView
@@ -27,33 +28,56 @@ class SurveyApiSerializer(serializers.ModelSerializer):
 class SurveyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        exclude = ['user', 'survey_id', 'view_count', 'start_time']
+        exclude = ['user', 'survey_id', 'view_count', 'start_time', 'cost']
+
+    def validate_cost(self, value):
+        if not 10 <= value <= 3000:
+            raise serializers.ValidationError("Cost must be between 10 and 3000")
+        return value
 
 
-class CreateSurveyApiSerializer(serializers.ModelSerializer):
+class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=100)
     description = serializers.CharField(max_length=1000)
     end_time = serializers.DateTimeField()
-    paid = serializers.BooleanField()
+
+    # paid = serializers.BooleanField()
 
     # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'description', 'end_time', 'paid', 'vote_limit']
-
-    # def validate_options(self, options):
-    #     if len(options) < 2:
-    #         raise serializers.ValidationError("Survey must have at least 2 options.")
-    #     if len(options) > 15:
-    #         raise serializers.ValidationError("Survey can have at most 15 options.")
-    #     return options
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit']
 
     def create(self, validated_data):
-        # options_data = validated_data.pop('options')
         user = self.context['request'].user
-        survey = Survey.objects.create(user=user, **validated_data)
+        cost = 0
+        survey = Survey.objects.create(user=user, cost=cost, **validated_data)
+        return survey
 
-        # for option_data in options_data:
-        #     SurveyOption.objects.create(survey=survey, **option_data)
 
+class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(max_length=100)
+    description = serializers.CharField(max_length=1000)
+    end_time = serializers.DateTimeField()
+
+    # paid = serializers.BooleanField()
+
+    # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
+    class Meta:
+        model = Survey
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'cost']
+
+    def validate_cost(self, value):
+        if value is None:
+            raise ValidationError("Cost is required.")
+        if not 10 <= value <= 3000:
+            raise ValidationError("Cost must be between 10 and 3000.")
+
+        return value
+
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        paid = True
+        survey = Survey.objects.create(user=user, paid=paid, **validated_data)
         return survey

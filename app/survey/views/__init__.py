@@ -1,5 +1,5 @@
-from .survey import SurveyApiView, SurveyDetailView, CreateSurveyApiView
-from .survey_option import SurveyOptionApiView, CreateSurveyOptionApiView
+from .survey import SurveyApiView, SurveyDetailView, CreateFreeSurveyApiView, CreatePaidSurveyApiView
+from .survey_option import SurveyOptionApiView, CreateSurveyOptionApiView, SurveyOptionDetailView
 from .survey_comment import SurveyCommentApiView, SurveyCommentCreateAPIView
 from .survey_like import SurveyLikeApiView, AddSurveyLikeApiView
 from .survey_comment_like import SurveyCommentLikeApiView, CreateSurveyCommentLikeApiView

@@ -1,20 +1,28 @@
 from django.contrib.auth.models import User
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import MultiPartRenderer
+from rest_framework.response import Response
 from rest_framework.templatetags import rest_framework
+from rest_framework.views import APIView
+
 from users.models import CustomUser  # Import your custom user model
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView
 from datetime import timedelta
 from django.utils import timezone
 
-from ..serializers import CreateSurveyOptionApiSerializer
+from ..permissions import IsOwnerOrReadOnlyOption, IsOwnerOrReadOnlyUser, \
+    IsCreatorOfSurvey
+from ..serializers import CreateSurveyOptionApiSerializer, SurveyOptionDetailApiSerializer
 from ..tasks import expire_survey
 from ..models import SurveyOption, Survey
-from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
+from ..serializers import SurveyOptionApiSerializer
 
 
 # @extend_schema(
@@ -36,7 +44,8 @@ from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
 # )
 @extend_schema(
     parameters=[
-        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to get all options', required=True),
+        OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to get all options',
+                         required=True),
     ],
     responses={200: SurveyOptionApiSerializer(many=True)},
     tags=['Api Survey Option']
@@ -44,6 +53,7 @@ from ..serializers import SurveyOptionApiSerializer, CreateSurveyApiSerializer
 class SurveyOptionApiView(ListAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = SurveyOptionApiSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyOption]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -87,8 +97,24 @@ class SurveyOptionApiView(ListAPIView):
 
 @extend_schema(tags=['Api Survey Option'])
 class CreateSurveyOptionApiView(CreateAPIView):
-    """
-        Go to this endpoint to upload image_file of option
-    """
+    # """
+    #     Go to this endpoint to upload image_file of option
+    # """
+    permission_classes = [IsAuthenticated, IsCreatorOfSurvey]
     queryset = SurveyOption.objects.all()
     serializer_class = CreateSurveyOptionApiSerializer
+    parser_classes = [MultiPartParser]
+
+
+@extend_schema(tags=['Api Survey Option'])
+class SurveyOptionDetailView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyOption]
+    queryset = SurveyOption.objects.all()
+    serializer_class = SurveyOptionDetailApiSerializer
+
+
+
+# @extend_schema(tags=['Api Survey Option'])
+# class SurveyOptionImageView(CreateAPIView):
+#     queryset = SurveyOption.objects.all()
+#     serializer_class = OptionImageApiSerializer

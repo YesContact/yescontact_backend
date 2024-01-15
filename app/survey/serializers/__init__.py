@@ -1,5 +1,5 @@
-from .survey import SurveyApiSerializer, SurveyDetailSerializer, CreateSurveyApiSerializer
-from .survey_option import SurveyOptionApiSerializer, CreateSurveyOptionApiSerializer
+from .survey import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, CreatePaidSurveyApiSerializer
+from .survey_option import SurveyOptionApiSerializer, CreateSurveyOptionApiSerializer, SurveyOptionDetailApiSerializer
 from .survey_comment import CreateSurveyCommentApiSerializer, CommentTreeSerializer
 from .survey_like import SurveyLikeApiSerializer
 from .survey_comment_like import SurveyCommentLikeApiSerializer
