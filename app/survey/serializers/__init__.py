@@ -10,5 +10,5 @@ from .survey_view import SurveyViewApiSerializer
 from .survey_vote import SurveyVoteApiSerializer
 from .survey_user import SurveyUserCreateSerializer, SurveyUserListSerializer, SurveyUserDetailSerializer
 
-from .jeton import JetonConverterSerializer
-from .wallet import WalletIncreaseSerializer
+# from .jeton import JetonConverterSerializer
+from .wallet import WalletIncreaseSerializer, JetonConverterSerializer

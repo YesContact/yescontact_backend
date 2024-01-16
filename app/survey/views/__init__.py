@@ -11,6 +11,6 @@ from .survey_vote import AddSurveyVoteApi, GetSurveyVoteApi
 from .survey_share import ShareSurveyApi
 from .survey_user import SurveyUserCreateView, SurveyUserListView, SurveyUserDetailView
 
-from .jeton import JetonConverterView
-from .wallet import WalletIncreaseView
+# from .jeton import JetonConverterView
+from .wallet import WalletIncreaseView, JetonConverterView
 from .survey_comment import SurveyCommentDetailView
