@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.models import CustomUser
 from django.contrib.auth.forms import PasswordResetForm
 
@@ -13,6 +13,7 @@ from app.utils import generate_otp, send_otp_email
 
 class UserRegistrationApiView(CreateAPIView):
     serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         instance = serializer.save()
