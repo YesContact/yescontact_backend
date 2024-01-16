@@ -22,7 +22,7 @@ class WalletIncreaseView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        amount = serializer.validated_data['amount']
+        amount = serializer.validated_data['dollar']
 
         MULTIPLIER_CONSTANT = 10
 
