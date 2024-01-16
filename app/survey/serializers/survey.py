@@ -28,7 +28,8 @@ class SurveyApiSerializer(serializers.ModelSerializer):
 class SurveyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        exclude = ['user', 'survey_id', 'view_count', 'start_time', 'cost']
+        # exclude = ['user', 'survey_id', 'view_count', 'start_time', 'cost']
+        fields = ['title', 'description', 'end_time', 'vote_limit']
 
     def validate_cost(self, value):
         if not 10 <= value <= 3000:

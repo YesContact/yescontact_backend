@@ -9,30 +9,46 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.models import CustomUser
 from ..models import Survey, SurveyOption
 from ..permissions import IsOwnerOrReadOnlyUser
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, \
     CreatePaidSurveyApiSerializer
 
 
-@extend_schema(tags=['Api Survey'])
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='survey_type', type=str,
+                         description="Surveys type (free, paid), If you want all don't specify this field"),
+        OpenApiParameter(name='user_id', type=str, description="Provide id of the creator of the survey"),
+    ],
+    responses={200: SurveyApiSerializer(many=True)},
+    tags=['Api Survey'])
 class SurveyApiView(ListAPIView):
-    queryset = Survey.objects.filter(active=True)
+    queryset = Survey.objects.filter()
     serializer_class = SurveyApiSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()
         survey_type = self.request.query_params.get('survey_type')
+        user_id = self.request.query_params.get('user_id')
 
         filter_params = Q()
-        if survey_type == 'paid':
-            filter_params |= Q(paid=True)
-        elif survey_type == 'free':
-            filter_params |= Q(paid=False)
-        else:
-            filter_params |= Q()
 
+        if user_id:
+            user = CustomUser.objects.filter(id=user_id).first()
+            if not user:
+                raise ValidationError("User not found")
+            filter_params &= Q(user=user)
+
+        if survey_type == 'paid':
+            filter_params &= Q(paid=True)
+        elif survey_type == 'free':
+            filter_params &= Q(paid=False)
+        else:
+            filter_params &= Q()
         queryset = queryset.filter(filter_params)
+        # print(queryset)
 
         return queryset
 
@@ -69,22 +85,22 @@ class SurveyDetailView(RetrieveUpdateAPIView):
 
         try:
             survey = Survey.objects.get(pk=survey_id)
-            survey.update_start_time()
+            # survey.update_start_time()
 
-            active_status = request.data.get('active')
+            # active_status = request.data.get('active')
             end_time = request.data.get('end_time')
             cost = request.data.get('cost')
 
-            if active_status or survey.active:
-                if end_time:
-                    status = survey.check_date_difference(end_time=end_time)
-                    if not status:
-                        raise ValidationError('End date is smaller than Start date')
+            if end_time:
+                status = survey.check_date_difference(end_time=end_time)
+                if not status:
+                    raise ValidationError('End date is smaller than Start date')
 
-                survey_options = SurveyOption.objects.filter(survey=survey).count()
-                if survey_options < 2:
-                    raise ValidationError('Options for survey are less than the minimum 2')
+            survey_options = SurveyOption.objects.filter(survey=survey).count()
+            if survey_options < 2:
+                raise ValidationError('Options for survey are less than the minimum 2')
 
+            if survey.paid:
                 if not survey.cost and not cost:
                     raise ValidationError('Cost specified is required')
 
@@ -126,12 +142,41 @@ class CreatePaidSurveyApiView(CreateAPIView):
 @extend_schema(
     parameters=[
         OpenApiParameter(name='survey_id', type=int, description='Specify id of survey to start',
-                         required=True),
+                         required=True, location='query'),
     ],
     responses={200: SurveyApiSerializer},
     tags=['Api Survey']
 )
 class StartSurveyApiView(APIView):
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyUser]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
+        survey_id = request.GET.get('survey_id')
+        survey = Survey.objects.filter(id=survey_id).first()
+        if not survey:
+            raise ValidationError('Survey not found')
+
+        if survey.user != request.user:
+            raise ValidationError('You are not the creator of this survey')
+
+        if not survey.status == 'ready_to_start':
+            raise ValidationError('Survey is not ready to start')
+
+        if not survey.end_time:
+            raise ValidationError('End date not specified')
+
+        survey.update_start_time()
+        status = survey.check_date_difference(end_time=survey.end_time)
+        if not status:
+            raise ValidationError('End date is smaller than Start date')
+
+        if survey.paid:
+            if not survey.cost:
+                raise ValidationError('Cost specified is required')
+            if not 10 <= survey.cost <= 3000:
+                raise ValidationError('Cost must be between 10 and 3000')
+
+        if survey.cost > request.user.wallet:
+            raise ValidationError('Insufficient balance')
+
         return Response({"message": "POST request processed"}, status=status.HTTP_200_OK)

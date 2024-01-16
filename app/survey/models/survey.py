@@ -55,6 +55,9 @@ class Survey(models.Model):
         self.start_time = timezone.now()
 
     def check_date_difference(self, end_time):
-        date_object = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
-        return date_object >= self.start_time
+        if isinstance(end_time, datetime):
+            return end_time >= self.start_time
+        elif isinstance(end_time, str):
+            date_object = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
+            return date_object >= self.start_time
 
