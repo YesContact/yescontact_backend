@@ -16,6 +16,7 @@ class Survey(models.Model):
 
     title = models.CharField(max_length=300, null=False)
     description = models.CharField(max_length=1000, null=False)
+    image = models.ImageField(upload_to='uploads/surveys/', null=False)
 
     paid = models.BooleanField(default=False)
     payment = models.BooleanField(default=False)
@@ -43,10 +44,6 @@ class Survey(models.Model):
 
     cost = models.IntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    visibility = models.CharField(max_length=100, default="public", choices=[
-        ("public", "Public"),
-        ("contact", "Contact"),
-    ], null=False, blank=False)
 
 
     class Meta:
