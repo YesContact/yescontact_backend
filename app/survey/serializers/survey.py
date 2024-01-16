@@ -50,7 +50,7 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
     # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'options']
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'options', 'visibility']
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -71,7 +71,7 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'cost', 'options']
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'cost', 'options', 'visibility']
 
     def validate_cost(self, value):
         if value is None:
