@@ -25,6 +25,26 @@ class CreateSurveyOptionApiSerializer(serializers.ModelSerializer):
 
         return data
 
+    # def validate_image(self, value):
+    #     survey_id = self.initial_data.get('paid')
+    #
+    #     # instance = Survey.objects.filter(id=survey_id).first()
+    #     # if not instance:
+    #     #     raise ValidationError('Survey with this id not found')
+    #
+    #     print(instance)
+    #     print(instance.survey)
+    #
+    #     if instance.survey.paid:
+    #         max_size = 1024 * 1024 * 4
+    #         if value.size > max_size:
+    #             raise ValidationError(f'Image size should be less than {max_size} mbytes')
+    #     elif not instance.survey.paid:
+    #         max_size = 1024 * 1024 * 2
+    #         if value.size > max_size:
+    #             raise ValidationError(f'Image size should be less than {max_size} mbytes')
+    #     return value
+
     def create(self, validated_data):
         # user = self.context['request'].user
         survey_option = SurveyOption.objects.create(**validated_data)
