@@ -5,6 +5,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.mixins import ListModelMixin
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from rest_framework.views import APIView
 
 from users.models import CustomUser
 from ..models import Survey, SurveyOption
+from ..pagination import SurveyListPagination
 from ..permissions import IsOwnerOrReadOnlyUser
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, \
     CreatePaidSurveyApiSerializer
@@ -25,9 +27,10 @@ from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFre
     ],
     responses={200: SurveyApiSerializer(many=True)},
     tags=['Api Survey'])
-class SurveyApiView(ListAPIView):
+class SurveyApiView(ListAPIView, ListModelMixin):
     queryset = Survey.objects.filter()
     serializer_class = SurveyApiSerializer
+    pagination_class = SurveyListPagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
