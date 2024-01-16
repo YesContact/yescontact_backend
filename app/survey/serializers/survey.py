@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
+from survey.serializers.survey_option import CreateSurveyOptionApiSerializer
 from ..models import Survey, SurveyOption, SurveyView
 
 
@@ -42,12 +43,14 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=1000)
     end_time = serializers.DateTimeField()
 
+    options = CreateSurveyOptionApiSerializer(many=True, write_only=True)
+
     # paid = serializers.BooleanField()
 
     # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'description', 'end_time', 'vote_limit']
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'options']
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -61,12 +64,14 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=1000)
     end_time = serializers.DateTimeField()
 
+    options = CreateSurveyOptionApiSerializer(many=True, write_only=True)
+
     # paid = serializers.BooleanField()
 
     # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'cost']
+        fields = ['id', 'title', 'description', 'end_time', 'vote_limit', 'cost', 'options']
 
     def validate_cost(self, value):
         if value is None:

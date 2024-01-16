@@ -5,6 +5,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -131,12 +132,14 @@ class SurveyDetailView(RetrieveUpdateAPIView):
 class CreateFreeSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreateFreeSurveyApiSerializer
+    parser_classes = [MultiPartParser]
 
 
 @extend_schema(tags=['Api Survey'])
 class CreatePaidSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreatePaidSurveyApiSerializer
+    parser_classes = [MultiPartParser]
 
 
 @extend_schema(
