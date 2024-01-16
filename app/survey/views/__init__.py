@@ -12,3 +12,4 @@ from .survey_share import ShareSurveyApi
 from .survey_user import SurveyUserCreateView, SurveyUserListView, SurveyUserDetailView
 
 from .jeton import JetonConverterView
+from .wallet import WalletIncreaseView

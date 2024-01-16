@@ -21,7 +21,7 @@ from survey.views import (
     AddSurveyLikeApiView,
     AddSurveyVoteApi,
     GetSurveyVoteApi,
-    ShareSurveyApi, JetonConverterView, StartSurveyApiView,
+    ShareSurveyApi, JetonConverterView, StartSurveyApiView, WalletIncreaseView,
 )
 
 from survey.views import (
@@ -81,5 +81,7 @@ urlpatterns = [
     path('convert-to-jeton', JetonConverterView.as_view(), name='convert-jeton'),
 
     path('start-survey/', StartSurveyApiView.as_view(), name='start-survey'),
+
+    path('increase-wallet', WalletIncreaseView.as_view(), name='increase-wallet'),
 
 ]
