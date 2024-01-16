@@ -13,7 +13,7 @@ from users.models import CustomUser  # Import your custom user model
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from datetime import timedelta
 from django.utils import timezone
 
@@ -107,7 +107,7 @@ class CreateSurveyOptionApiView(CreateAPIView):
 
 
 @extend_schema(tags=['Api Survey Option'])
-class SurveyOptionDetailView(RetrieveUpdateAPIView):
+class SurveyOptionDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyOption]
     queryset = SurveyOption.objects.all()
     serializer_class = SurveyOptionDetailApiSerializer
