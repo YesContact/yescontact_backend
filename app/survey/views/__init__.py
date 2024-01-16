@@ -13,3 +13,4 @@ from .survey_user import SurveyUserCreateView, SurveyUserListView, SurveyUserDet
 
 from .jeton import JetonConverterView
 from .wallet import WalletIncreaseView
+from .survey_comment import SurveyCommentDetailView

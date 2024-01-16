@@ -22,6 +22,7 @@ from survey.views import (
     AddSurveyVoteApi,
     GetSurveyVoteApi,
     ShareSurveyApi, JetonConverterView, StartSurveyApiView, WalletIncreaseView,
+    SurveyCommentDetailView
 )
 
 from survey.views import (
@@ -46,6 +47,7 @@ urlpatterns = [
     ),
     path("survey-comments/", SurveyCommentApiView.as_view(), name="survey-comments"),
     path("create-survey-comment/", SurveyCommentCreateAPIView.as_view(), name='create-survey-comment'),
+    path("survey-comment/<int:pk>", SurveyCommentDetailView.as_view(), name='survey-comment'),
 
     path("survey-likes/", SurveyLikeApiView.as_view(), name="comment-likes"),
     path("add-survey-like", AddSurveyLikeApiView.as_view(), name='add-survey-like'),

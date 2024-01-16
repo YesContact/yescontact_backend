@@ -4,6 +4,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from ..permissions import IsOwnerOrReadOnlyComment, IsWriterOfComment
 
 from ..models import Survey, Comment
 from ..serializers import CreateSurveyCommentApiSerializer, CommentTreeSerializer
@@ -56,7 +57,7 @@ class SurveyCommentApiView(ListAPIView):
 class SurveyCommentCreateAPIView(CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CreateSurveyCommentApiSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyComment]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -68,6 +69,6 @@ class SurveyCommentCreateAPIView(CreateAPIView):
 
 @extend_schema(tags=['Api Survey Comment'])
 class SurveyCommentDetailView(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsWriterOfComment]
     queryset = Comment.objects.all()
     serializer_class = CreateSurveyCommentApiSerializer
