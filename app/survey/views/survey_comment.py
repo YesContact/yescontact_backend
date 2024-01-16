@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Survey, Comment
@@ -64,3 +64,10 @@ class SurveyCommentCreateAPIView(CreateAPIView):
     # @swagger_auto_schema(tags=['Api Survey Comment'])
     # def post(self, request, *args, **kwargs):
     #     return super().post(request, *args, **kwargs)
+        
+
+@extend_schema(tags=['Api Survey Comment'])
+class SurveyCommentDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Comment.objects.all()
+    serializer_class = CreateSurveyCommentApiSerializer
