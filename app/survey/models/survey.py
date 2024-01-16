@@ -42,6 +42,7 @@ class Survey(models.Model):
     )
 
     cost = models.IntegerField(null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:

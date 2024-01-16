@@ -51,7 +51,7 @@ class SurveyApiView(ListAPIView, ListModelMixin):
             filter_params &= Q(paid=False)
         else:
             filter_params &= Q()
-        queryset = queryset.filter(filter_params)
+        queryset = queryset.filter(filter_params).order_by('-created_at')
         # print(queryset)
 
         return queryset
