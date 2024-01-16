@@ -59,7 +59,7 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
             "end_time",
             "vote_limit",
             "options",
-            "visibility",
+            "view_count",
         ]
 
     def validate_image(self, value):
@@ -78,6 +78,7 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
 class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=100)
     description = serializers.CharField(max_length=1000)
+    start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     image = serializers.ImageField()
 
@@ -91,12 +92,14 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "image",
             "description",
+            "start_time",
             "end_time",
             "vote_limit",
             "cost",
             "options",
-            "visibility",
+            "view_count",
         ]
 
     def validate_image(self, value):
@@ -110,6 +113,19 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
             raise ValidationError("Cost is required.")
         if not 10 <= value <= 3000:
             raise ValidationError("Cost must be between 10 and 3000.")
+
+        return value
+    
+    def validate_end_time(self, value):
+        cost = self.initial_data.get('cost')
+        start_time = self.initial_data.get('start_time')
+        end_time = self.initial_data.get('end_time')
+
+        if cost is not None and (start_time is None or end_time is None):
+            raise ValidationError("Start time and end time are required for paid surveys.")
+        
+        if start_time and end_time and start_time >= end_time:
+            raise ValidationError("End time must be greater than start time.") 
 
         return value
 
