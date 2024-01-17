@@ -79,6 +79,8 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         # options = self.validated_data.get('options')
 
         options_data = validated_data.pop('options', None)
+        if not 2 <= len(options_data) <= 15:
+            raise ValidationError("Options count must be between 2 and 15")
 
         survey = Survey.objects.create(user=user, cost=cost, **validated_data)
         if options_data:
@@ -164,7 +166,8 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
         # options = self.validated_data.get('options')
 
         options_data = validated_data.pop('options', None)
-        test = validated_data
+        if not 2 <= len(options_data) <= 15:
+            raise ValidationError("Options count must be between 2 and 15")
         survey = Survey.objects.create(user=user, paid=paid, **validated_data)
         if options_data:
             for option_data in options_data:
