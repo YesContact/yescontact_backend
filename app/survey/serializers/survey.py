@@ -49,9 +49,8 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
     options = CreateSurveyOptionWithSurveyApiSerializer(many=True, write_only=True)
 
-    # paid = serializers.BooleanField()
+    FILE_MAX_SIZE = 2 * 1024 * 1024
 
-    # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
         fields = [
@@ -67,8 +66,7 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         ]
 
     def validate_image(self, value):
-        max_size = 2 * 1024 * 1024
-        if value.size > max_size:
+        if value.size > self.FILE_MAX_SIZE:
             raise ValidationError("Image size must be less than 2MB")
         return value
 
@@ -85,6 +83,10 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         survey = Survey.objects.create(user=user, cost=cost, **validated_data)
         if options_data:
             for option_data in options_data:
+                if option_data.get('image', None):
+                    if option_data.get('image').size > self.FILE_MAX_SIZE:
+                        raise ValidationError("Image size of option must be less than 2MB")
+
                 SurveyOption.objects.create(survey=survey, **option_data)
 
         # for option in options:
@@ -101,11 +103,9 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     # image = serializers.ImageField()
     image = Base64ImageField(required=False, allow_null=True)
     options = CreateSurveyOptionWithSurveyApiSerializer(many=True, write_only=True)
-    # options = serializers.SerializerMethodField()
 
-    # paid = serializers.BooleanField()
+    FILE_MAX_SIZE = 4 * 1024 * 1024
 
-    # options = serializers.ListField(child=serializers.CharField(max_length=100), min_length=2, max_length=15)
     class Meta:
         model = Survey
         fields = [
@@ -136,7 +136,7 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
             raise ValidationError("Cost must be between 10 and 3000.")
 
         return value
-    
+
     def validate_end_time(self, value):
         cost = self.initial_data.get('cost')
         start_time = self.initial_data.get('start_time')
@@ -144,21 +144,12 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
 
         if cost is not None and (start_time is None or end_time is None):
             raise ValidationError("Start time and end time are required for paid surveys.")
-        
+
         if start_time and end_time and start_time >= end_time:
-            raise ValidationError("End time must be greater than start time.") 
+            raise ValidationError("End time must be greater than start time.")
 
         return value
 
-    # def get_options(self, obj):
-    #     survey_options = SurveyOption.objects.filter(survey=obj).all()
-    #     return CreateSurveyOptionWithSurveyApiSerializer(survey_options, many=True).data
-
-    # def create(self, validated_data):
-    #     user = self.context["request"].user
-    #     paid = True
-    #     survey = Survey.objects.create(user=user, paid=paid, **validated_data)
-    #     return survey
     @transaction.atomic
     def create(self, validated_data):
         user = self.context["request"].user
@@ -171,6 +162,9 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
         survey = Survey.objects.create(user=user, paid=paid, **validated_data)
         if options_data:
             for option_data in options_data:
+                if option_data.get('image', None):
+                    if option_data.get('image').size > self.FILE_MAX_SIZE:
+                        raise ValidationError("Image size of option must be less than 4MB")
                 SurveyOption.objects.create(survey=survey, **option_data)
 
         # for option in options:
