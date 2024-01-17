@@ -176,6 +176,9 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
         survey.payment = True
         survey.save()
 
+        survey.status = 'active'
+        survey.save()
+
 
 
         # for option in options:
