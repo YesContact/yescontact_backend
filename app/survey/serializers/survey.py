@@ -62,7 +62,8 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
             "end_time",
             "vote_limit",
             "options",
-            "view_count",
+            "visibility",
+            # "view_count",
         ]
 
     def validate_image(self, value):
@@ -95,9 +96,10 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=1000)
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
-    image = serializers.ImageField()
-
-    options = CreateSurveyOptionWithSurveyApiSerializer(many=True)
+    # image = serializers.ImageField()
+    image = Base64ImageField(required=False, allow_null=True)
+    options = CreateSurveyOptionWithSurveyApiSerializer(many=True, write_only=True)
+    # options = serializers.SerializerMethodField()
 
     # paid = serializers.BooleanField()
 
@@ -107,14 +109,16 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "image",
             "description",
             "start_time",
             "end_time",
             "vote_limit",
             "cost",
+            "visibility",
+            "image",
             "options",
-            "view_count",
+            # "view_count",
+
         ]
 
     def validate_image(self, value):
@@ -144,8 +148,29 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
 
         return value
 
+    # def get_options(self, obj):
+    #     survey_options = SurveyOption.objects.filter(survey=obj).all()
+    #     return CreateSurveyOptionWithSurveyApiSerializer(survey_options, many=True).data
+
+    # def create(self, validated_data):
+    #     user = self.context["request"].user
+    #     paid = True
+    #     survey = Survey.objects.create(user=user, paid=paid, **validated_data)
+    #     return survey
+    @transaction.atomic
     def create(self, validated_data):
         user = self.context["request"].user
         paid = True
+        # options = self.validated_data.get('options')
+
+        options_data = validated_data.pop('options', None)
+        test = validated_data
         survey = Survey.objects.create(user=user, paid=paid, **validated_data)
+        if options_data:
+            for option_data in options_data:
+                SurveyOption.objects.create(survey=survey, **option_data)
+
+        # for option in options:
+        #     print(option)
+
         return survey

@@ -171,12 +171,11 @@ class CreateFreeSurveyApiView(CreateAPIView):
     #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 @extend_schema(tags=['Api Survey'])
 class CreatePaidSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreatePaidSurveyApiSerializer
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser]
 
 
 @extend_schema(

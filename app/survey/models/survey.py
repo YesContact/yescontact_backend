@@ -44,6 +44,10 @@ class Survey(models.Model):
 
     cost = models.IntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    visibility = models.CharField(max_length=100, default="public", choices=[
+        ("public", "Public"),
+        ("contact", "Contact"),
+    ])
 
 
     class Meta:
