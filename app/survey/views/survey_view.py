@@ -66,8 +66,8 @@ class SurveyGetViewApi(ListAPIView):
     responses={201: SurveyViewApiSerializer},
     tags=['Api Survey View']
 )
-class AddSurveyViewApi(GenericAPIView):
-    serializer_class = SurveyViewApiSerializer
+class AddSurveyViewApi(APIView):
+    # serializer_class = SurveyViewApiSerializer
 
     # @swagger_auto_schema(
     #     manual_parameters=[

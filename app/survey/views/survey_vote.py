@@ -54,7 +54,8 @@ class GetSurveyVoteApi(APIView):
 
 @extend_schema(
     parameters=[
-        OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to add new vote', required=True),
+        OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to add new vote',
+                         required=True),
     ],
     responses={201: SurveyVoteApiSerializer},
     tags=['Api Survey Vote']
