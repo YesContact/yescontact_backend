@@ -33,6 +33,7 @@ class SurveyApiView(ListAPIView, ListModelMixin):
     queryset = Survey.objects.filter(status='active')
     serializer_class = SurveyApiSerializer
     pagination_class = SurveyListPagination
+    permission_classes = [IsAuthenticated, IsVisibleSurvey]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -79,7 +80,7 @@ class SurveyDetailView(RetrieveAPIView):
     queryset = Survey.objects.all()
     # serializer_class = SurveyDetailSerializer
     serializer_class = SurveyApiSerializer
-    # permission_classes = [IsAuthenticated, IsVisibleSurvey]
+    permission_classes = [IsAuthenticated, IsVisibleSurvey]
 
     # def get_serializer_class(self):
     #     if self.request.method in ['PUT', 'PATCH']:
