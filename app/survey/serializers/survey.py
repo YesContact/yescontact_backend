@@ -167,6 +167,17 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
                         raise ValidationError("Image size of option must be less than 4MB")
                 SurveyOption.objects.create(survey=survey, **option_data)
 
+        if user.wallet < survey.cost:
+            raise ValidationError("Insufficient balance.")
+
+        user.wallet -= survey.cost
+        user.save()
+
+        survey.payment = True
+        survey.save()
+
+
+
         # for option in options:
         #     print(option)
 
