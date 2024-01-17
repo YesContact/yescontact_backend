@@ -57,12 +57,12 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "image",
             "description",
             "end_time",
             "vote_limit",
-            "options",
             "visibility",
+            "image",
+            "options",
             # "view_count",
         ]
 
