@@ -10,7 +10,8 @@ from ..serializers import SurveyVoteApiSerializer
 
 @extend_schema(
     parameters=[
-        OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to get by survey_option_id', required=True),
+        OpenApiParameter(name='survey_option_id', type=int,
+                         description='Specify id of survey option to get by survey_option_id', required=True),
     ],
     responses={200: SurveyVoteApiSerializer(many=True)},
     tags=['Api Survey Vote']
@@ -56,6 +57,8 @@ class GetSurveyVoteApi(APIView):
     parameters=[
         OpenApiParameter(name='survey_option_id', type=int, description='Specify id of survey option to add new vote',
                          required=True),
+        OpenApiParameter(name='amount', type=int,
+                         description='Specify amount of jetons to vote (if survey is free, ignore this field)'),
     ],
     responses={201: SurveyVoteApiSerializer},
     tags=['Api Survey Vote']
@@ -78,6 +81,7 @@ class AddSurveyVoteApi(APIView):
     # )
     def post(self, request, *args, **kwargs):
         survey_option_id = self.request.query_params.get('survey_option_id')
+        amount = self.request.query_params.get('amount')
         try:
             survey_option = SurveyOption.objects.get(id=survey_option_id)
         except SurveyOption.DoesNotExist:
@@ -87,6 +91,26 @@ class AddSurveyVoteApi(APIView):
             survey = Survey.objects.get(id=survey_option.survey.id)
         except Survey.DoesNotExist:
             return Response({"message": "Survey not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if survey.paid:
+            if not amount:
+                return Response({"message": "Amount is missing in paid survey"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                amount = float(amount)
+            except ValueError:
+                return Response({"message": "Amount must be a number"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            print(amount)
+
+            if not 0.1 < amount < 1300:
+                return Response({"message": "Amount must be greater than 0.1 and less than 1300"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            if request.user.wallet < amount:
+                return Response({"message": "Not enough jetons to vote"}, status=status.HTTP_404_NOT_FOUND)
 
         exists_survey_vote = SurveyVote.objects.filter(survey_option=survey_option, user=request.user,
                                                        survey=survey).first()
