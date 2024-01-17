@@ -20,3 +20,10 @@ class TheNumbersOnMyPhone(viewsets.ModelViewSet):
         phones = Contact.objects.filter(user=user)
         serializer = ContactSerializer(phones, many=True)
         return Response(serializer.data)
+    
+    def create(self, request):
+        user = request.user
+        serializer = ContactSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+        return Response(serializer.data)
