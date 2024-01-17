@@ -42,4 +42,4 @@ class CustomUser(AbstractUser):
         verbose_name_plural = ('İstifadəçilər')
 
     def __str__(self) -> str:
-        return self.full_name
+        return f'{self.full_name} {self.email}'

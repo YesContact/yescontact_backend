@@ -59,8 +59,8 @@ class GetSurveyVoteApi(APIView):
     responses={201: SurveyVoteApiSerializer},
     tags=['Api Survey Vote']
 )
-class AddSurveyVoteApi(GenericAPIView):
-    serializer_class = SurveyVoteApiSerializer
+class AddSurveyVoteApi(APIView):
+    # serializer_class = SurveyVoteApiSerializer
 
     # @swagger_auto_schema(
     #     manual_parameters=[

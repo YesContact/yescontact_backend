@@ -35,10 +35,10 @@ class SurveyDetailSerializer(serializers.ModelSerializer):
         # exclude = ['user', 'survey_id', 'view_count', 'start_time', 'cost']
         fields = ["title", "description", "end_time", "vote_limit"]
 
-    def validate_cost(self, value):
-        if not 10 <= value <= 3000:
-            raise serializers.ValidationError("Cost must be between 10 and 3000")
-        return value
+    # def validate_cost(self, value):
+    #     if not 10 <= value <= 3000:
+    #         raise serializers.ValidationError("Cost must be between 10 and 3000")
+    #     return value
 
 
 class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):

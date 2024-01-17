@@ -6,7 +6,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.mixins import ListModelMixin
 from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from users.models import CustomUser
 from ..models import Survey, SurveyOption
 from ..pagination import SurveyListPagination
-from ..permissions import IsOwnerOrReadOnlyUser
+from ..permissions import IsOwnerOrReadOnlyUser, IsVisibleSurvey
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, \
     CreatePaidSurveyApiSerializer
 
@@ -30,7 +30,7 @@ from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFre
     responses={200: SurveyApiSerializer(many=True)},
     tags=['Api Survey'])
 class SurveyApiView(ListAPIView, ListModelMixin):
-    queryset = Survey.objects.filter()
+    queryset = Survey.objects.filter(status='active')
     serializer_class = SurveyApiSerializer
     pagination_class = SurveyListPagination
 
@@ -75,58 +75,61 @@ class SurveyApiView(ListAPIView, ListModelMixin):
 
 
 @extend_schema(tags=['Api Survey'])
-class SurveyDetailView(RetrieveUpdateAPIView):
+class SurveyDetailView(RetrieveAPIView):
     queryset = Survey.objects.all()
-    serializer_class = SurveyDetailSerializer
+    # serializer_class = SurveyDetailSerializer
+    serializer_class = SurveyApiSerializer
+    # permission_classes = [IsAuthenticated, IsVisibleSurvey]
 
-    def get_serializer_class(self):
-        if self.request.method in ['PUT', 'PATCH']:
-            return SurveyDetailSerializer
-        else:
-            return SurveyApiSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method in ['PUT', 'PATCH']:
+    #         return SurveyDetailSerializer
+    #     else:
+    #         return SurveyApiSerializer
 
     # @swagger_auto_schema(tags=['Api Survey'])
-    def update_survey(self, request, *args, **kwargs):
-        survey_id = kwargs.get('pk')
+    # def update_survey(self, request, *args, **kwargs):
+    #     survey_id = kwargs.get('pk')
+    #
+    #     try:
+    #         survey = Survey.objects.get(pk=survey_id)
+    #         # survey.update_start_time()
+    #
+    #         # active_status = request.data.get('active')
+    #         end_time = request.data.get('end_time')
+    #         # cost = request.data.get('cost')
+    #
+    #
+    #         if end_time:
+    #             status = survey.check_date_difference(end_time=end_time)
+    #             if not status:
+    #                 raise ValidationError('End date is smaller than Start date')
+    #
+    #         survey_options = SurveyOption.objects.filter(survey=survey).count()
+    #         if survey_options < 2:
+    #             raise ValidationError('Options for survey are less than the minimum 2')
 
-        try:
-            survey = Survey.objects.get(pk=survey_id)
-            # survey.update_start_time()
-
-            # active_status = request.data.get('active')
-            end_time = request.data.get('end_time')
-            cost = request.data.get('cost')
-
-            if end_time:
-                status = survey.check_date_difference(end_time=end_time)
-                if not status:
-                    raise ValidationError('End date is smaller than Start date')
-
-            survey_options = SurveyOption.objects.filter(survey=survey).count()
-            if survey_options < 2:
-                raise ValidationError('Options for survey are less than the minimum 2')
-
-            if survey.paid:
-                if not survey.cost and not cost:
-                    raise ValidationError('Cost specified is required')
-
-                if not 10 <= cost <= 3000:
-                    raise ValidationError('Cost must be between 10 and 3000')
-
-
-
+            # if survey.paid:
+            #     if not survey.cost and not cost:
+            #         raise ValidationError('Cost specified is required')
+            #
+            #     if not 10 <= cost <= 3000:
+            #         raise ValidationError('Cost must be between 10 and 3000')
 
 
-        except Survey.DoesNotExist:
-            raise ValidationError('Survey not found')
 
-        if request.method == 'PUT':
-            return super().put(request, *args, **kwargs)
-        elif request.method == 'PATCH':
-            return super().patch(request, *args, **kwargs)
 
-    put = update_survey
-    patch = update_survey
+
+        # except Survey.DoesNotExist:
+        #     raise ValidationError('Survey not found')
+        #
+        # if request.method == 'PUT':
+        #     return super().put(request, *args, **kwargs)
+        # elif request.method == 'PATCH':
+        #     return super().patch(request, *args, **kwargs)
+
+    # put = update_survey
+    # patch = update_survey
 
     # @swagger_auto_schema(tags=['Api Survey'])
     # def get(self, request, *args, **kwargs):
