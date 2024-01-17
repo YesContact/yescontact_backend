@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_yasg import openapi
@@ -6,7 +8,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.mixins import ListModelMixin
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -131,11 +133,43 @@ class SurveyDetailView(RetrieveUpdateAPIView):
     #     return super().get(request, *args, **kwargs)
 
 
-@extend_schema(tags=['Api Survey'])
+@extend_schema(
+    request=CreateFreeSurveyApiSerializer,
+    responses={200: CreateFreeSurveyApiSerializer(many=True)},
+    tags=['Api Survey'])
 class CreateFreeSurveyApiView(CreateAPIView):
     queryset = SurveyOption.objects.all()
     serializer_class = CreateFreeSurveyApiSerializer
-    parser_classes = [MultiPartParser]
+    # parser_classes = [MultiPartParser, JSONParser]
+    # parser_classes = [MultiPartParser]
+
+    # def perform_create(self, serializer):
+    #     options_data = self.request.data.get('options', [])
+    #     if options_data > 15:
+    #         raise ValidationError('Options for survey are more than the maximum 15')
+    #
+    #     survey = serializer.save()
+    #
+    #     for option_data in options_data:
+    #         SurveyOption.objects.create(survey=survey, **option_data)
+
+    # def post(self, request, *args, **kwargs):
+    #     serializer = CreateFreeSurveyApiSerializer(data=request.data)
+    #
+    #     # Обработка данных JSON вручную
+    #     options_data_str = request.data.get('options')
+    #     if options_data_str:
+    #         options_data = json.loads(options_data_str)
+    #         updated_data = request.data.copy()
+    #         updated_data['options'] = options_data
+    #     else:
+    #         updated_data = request.data
+    #
+    #     serializer = CreateFreeSurveyApiSerializer(data=updated_data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 @extend_schema(tags=['Api Survey'])

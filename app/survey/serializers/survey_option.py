@@ -1,3 +1,4 @@
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import FileField
@@ -10,6 +11,15 @@ class SurveyOptionApiSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyOption
         fields = '__all__'
+
+
+class CreateSurveyOptionWithSurveyApiSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(required=True, allow_null=True)
+
+    class Meta:
+        model = SurveyOption
+        # fields = '__all__'
+        exclude = ['survey']
 
 
 class CreateSurveyOptionApiSerializer(serializers.ModelSerializer):
@@ -55,5 +65,3 @@ class SurveyOptionDetailApiSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyOption
         fields = '__all__'
-
-

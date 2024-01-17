@@ -1,8 +1,10 @@
+from django.db import transaction
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
-from survey.serializers.survey_option import CreateSurveyOptionApiSerializer
+from survey.serializers.survey_option import CreateSurveyOptionApiSerializer, CreateSurveyOptionWithSurveyApiSerializer
 from ..models import Survey, SurveyOption, SurveyView
 
 
@@ -43,8 +45,9 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=100)
     description = serializers.CharField(max_length=1000)
     end_time = serializers.DateTimeField()
-    image = serializers.ImageField()
-    options = CreateSurveyOptionApiSerializer(many=True, write_only=True)
+    # image = serializers.ImageField()
+    image = Base64ImageField(required=False, allow_null=True)
+    options = CreateSurveyOptionWithSurveyApiSerializer(many=True, write_only=True)
 
     # paid = serializers.BooleanField()
 
@@ -68,10 +71,22 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
             raise ValidationError("Image size must be less than 2MB")
         return value
 
+    @transaction.atomic
     def create(self, validated_data):
         user = self.context["request"].user
         cost = 0
+        # options = self.validated_data.get('options')
+
+        options_data = validated_data.pop('options', None)
+
         survey = Survey.objects.create(user=user, cost=cost, **validated_data)
+        if options_data:
+            for option_data in options_data:
+                SurveyOption.objects.create(survey=survey, **option_data)
+
+        # for option in options:
+        #     print(option)
+
         return survey
 
 
@@ -82,7 +97,7 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     end_time = serializers.DateTimeField()
     image = serializers.ImageField()
 
-    options = CreateSurveyOptionApiSerializer(many=True, write_only=True)
+    options = CreateSurveyOptionWithSurveyApiSerializer(many=True)
 
     # paid = serializers.BooleanField()
 
