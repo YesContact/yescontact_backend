@@ -11,3 +11,7 @@ class SearchContacts(models.Model):
         blank=True,
         related_name="user_search_contacts",
     )
+
+    class Meta:
+        verbose_name = "Search Contact"
+        verbose_name_plural = "Search Contacts"
