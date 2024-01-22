@@ -48,7 +48,9 @@ THIRD_PARTY_APPS = [
     'django_otp.plugins.otp_totp',
     'rest_framework.authtoken',
     'channels',
-    'drf_spectacular'
+    'drf_spectacular',
+    'celery',
+    'django_celery_beat',
 ]
 
 CUSTOM_APPS = [
@@ -350,5 +352,11 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_FUNC': 'main.views.schema_view',
     'COMPONENT_SPLIT_REQUEST': True,
 }
-#
 
+# Celery config
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
