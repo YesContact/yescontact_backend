@@ -73,6 +73,7 @@ class Survey(models.Model):
     def seconds_until_end(self):
         return int((self.end_time - timezone.now()).total_seconds())
 
+    @property
     def check_completed(self):
         return CompletedSurvey.objects.filter(survey=self).exists()
 

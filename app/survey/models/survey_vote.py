@@ -28,6 +28,8 @@ class SurveyVote(models.Model):
         related_name="vote_user",
     )
 
+    amount = models.IntegerField(null=False, default=0)
+
     class Meta:
         verbose_name = "SurveyVote"
         verbose_name_plural = "SurveyVotes"

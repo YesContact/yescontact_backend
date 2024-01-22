@@ -16,6 +16,25 @@ def submit_survey(survey):
     )
     completed_survey.save()
 
+    options = SurveyOption.objects.filter(survey=survey).all()
+    total_dict = {
+
+    }
+    # for option in options:
+    #     votes = SurveyVote.objects.filter(survey_option=option).all()
+    #     total_price = 0
+    #     for vote in votes:
+    #         total_price += vote.ammount
+    #
+    #     total_dict[option.id] = {
+    #         'votes': len(votes),
+    #         'total_price': 0
+    #     }
+    #     total_dict[option.id] =
+    #
+    # print(total_dict)
+
+
 
 
     pass
@@ -105,6 +124,7 @@ class AddSurveyVoteApi(APIView):
         except Survey.DoesNotExist:
             return Response({"message": "Survey not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        print(survey.check_completed)
         if survey.check_completed:
             return Response({"message": "Survey is completed"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -138,7 +158,7 @@ class AddSurveyVoteApi(APIView):
             submit_survey(survey=survey)
             return Response({"message": "Max votes reached"}, status=status.HTTP_404_NOT_FOUND)
 
-        survey_vote = SurveyVote(survey_option=survey_option, user=request.user, survey=survey)
+        survey_vote = SurveyVote(survey_option=survey_option, user=request.user, survey=survey, amount=amount)
         survey_vote.save()
 
         serializer = SurveyVoteApiSerializer(survey_vote)
