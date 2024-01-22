@@ -1,3 +1,5 @@
+from itertools import groupby
+
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -7,38 +9,51 @@ from rest_framework.views import APIView
 
 from ..models import Survey, SurveyVote, SurveyOption, CompletedSurvey
 from ..serializers import SurveyVoteApiSerializer
+from django.db.models import Max, Sum
 
 
 def submit_survey(survey):
-    completed_survey = CompletedSurvey(
-        survey=survey,
-        completed_at=timezone.now()
-    )
-    completed_survey.save()
+    # completed_survey = CompletedSurvey(
+    #     survey=survey,
+    #     completed_at=timezone.now()
+    # )
+    # completed_survey.save()
 
-    options = SurveyOption.objects.filter(survey=survey).all()
-    total_dict = {
+    winning_option = SurveyOption.objects.filter(survey=survey).annotate(
+        total_votes=Sum('vote_survey_option__amount')).order_by('-total_votes').first()
 
-    }
+    total_price_except_winning_option = \
+        SurveyVote.objects.filter(survey_option__survey=survey).exclude(survey_option=winning_option).aggregate(
+            total_price=Sum('amount'))[
+            'total_price']
+    print(total_price_except_winning_option)
+
+    # options = SurveyOption.objects.filter(survey=survey).all()
+    # total = []
     # for option in options:
     #     votes = SurveyVote.objects.filter(survey_option=option).all()
     #     total_price = 0
     #     for vote in votes:
-    #         total_price += vote.ammount
+    #         total_price += vote.amount
     #
-    #     total_dict[option.id] = {
+    #     total.append({
+    #         'option': option,
     #         'votes': len(votes),
-    #         'total_price': 0
-    #     }
-    #     total_dict[option.id] =
+    #         'total_price': total_price
+    #     })
     #
-    # print(total_dict)
-
-
-
-
-    pass
-
+    # sorted_data = sorted(total, key=lambda x: x['total_price'])
+    # grouped_data = {key: list(group) for key, group in groupby(sorted_data, key=lambda x: x['total_price'])}
+    # total_price = sum(item['total_price'] for item in total)
+    # max_price_option = max(total, key=lambda x: x['total_price'])['option']
+    #
+    # print(f"Option с максимальной ценой: {max_price_option}")
+    #
+    # print(grouped_data)
+    #
+    # for price, items in grouped_data.items():
+    #     percent_price = (price / total_price) * 100
+    #     print(f"Price: {price}, Percentage of Total Price: {percent_price:.2f}%")
 
 @extend_schema(
     parameters=[
@@ -139,8 +154,6 @@ class AddSurveyVoteApi(APIView):
                 return Response({"message": "Amount must be a number"},
                                 status=status.HTTP_404_NOT_FOUND)
 
-            print(amount)
-
             if not 0.1 < amount < 1300:
                 return Response({"message": "Amount must be greater than 0.1 and less than 1300"},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -148,10 +161,10 @@ class AddSurveyVoteApi(APIView):
             if request.user.wallet < amount:
                 return Response({"message": "Not enough jetons to vote"}, status=status.HTTP_404_NOT_FOUND)
 
-        exists_survey_vote = SurveyVote.objects.filter(survey_option=survey_option, user=request.user,
-                                                       survey=survey).first()
-        if exists_survey_vote:
-            return Response({"message": "Vote is already added"}, status=status.HTTP_404_NOT_FOUND)
+        # exists_survey_vote = SurveyVote.objects.filter(survey_option=survey_option, user=request.user,
+        #                                                survey=survey).first()
+        # if exists_survey_vote:
+        #     return Response({"message": "Vote is already added"}, status=status.HTTP_404_NOT_FOUND)
 
         all_votes = SurveyVote.objects.filter(survey=survey).count()
         if survey.vote_limit and all_votes >= survey.vote_limit:
