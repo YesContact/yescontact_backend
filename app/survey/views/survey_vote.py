@@ -44,11 +44,6 @@ def submit_survey(survey):
         vote.user.wallet += vote.amount
         vote.user.save()
 
-
-
-
-
-
     # options = SurveyOption.objects.filter(survey=survey).all()
     # total = []
     # for option in options:
