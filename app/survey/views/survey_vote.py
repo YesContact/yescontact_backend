@@ -105,6 +105,9 @@ class AddSurveyVoteApi(APIView):
         except Survey.DoesNotExist:
             return Response({"message": "Survey not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        if survey.check_completed:
+            return Response({"message": "Survey is completed"}, status=status.HTTP_404_NOT_FOUND)
+
         if survey.paid:
             if not amount:
                 return Response({"message": "Amount is missing in paid survey"},

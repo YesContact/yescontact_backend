@@ -73,6 +73,9 @@ class Survey(models.Model):
     def seconds_until_end(self):
         return int((self.end_time - timezone.now()).total_seconds())
 
+    def check_completed(self):
+        return CompletedSurvey.objects.filter(survey=self).exists()
+
 
 class CompletedSurvey(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
