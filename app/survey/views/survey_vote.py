@@ -117,6 +117,10 @@ class AddSurveyVoteApi(APIView):
         if exists_survey_vote:
             return Response({"message": "Vote is already added"}, status=status.HTTP_404_NOT_FOUND)
 
+        all_votes = SurveyVote.objects.filter(survey=survey).count()
+        if survey.vote_limit and all_votes >= survey.vote_limit:
+            return Response({"message": "Max votes reached"}, status=status.HTTP_404_NOT_FOUND)
+
         survey_vote = SurveyVote(survey_option=survey_option, user=request.user, survey=survey)
         survey_vote.save()
 
