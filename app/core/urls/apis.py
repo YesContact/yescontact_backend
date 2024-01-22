@@ -14,7 +14,8 @@ router.register('search-record', SearchRecordViewSet, basename='search-record')
 urlpatterns = [
     path('contacts/', ContactList.as_view({'get': 'list', 'post': 'create',}), name='contacts'),
     path('take-numbers/', TakingNumbersViewSet.as_view({'get': 'list', 'post': 'create',}), name='take-numbers'),
-    path('who-saved-mn/', WhoSavedMNViewSet.as_view({'get': 'list', 'post': 'create'}), name='who-saved-mn'),
+    path('who-saved-mn/', WhoSavedMNViewSet.as_view({'get': 'list'}), name='who-saved-mn'),
+    path('tags/', TagViewSet.as_view({'post': 'create'}), name='tags'),
     path('the-numbers-on-my-phone/', TheNumbersOnMyPhone.as_view({'get': 'list', 'post': 'create'}), name='the-numbers-on-my-phone'),
     path('search-record/', SearchRecordViewSet.as_view({'post': 'create'}), name='search-record'),
 ]
