@@ -1,11 +1,24 @@
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import Survey, SurveyVote, SurveyOption
+from ..models import Survey, SurveyVote, SurveyOption, CompletedSurvey
 from ..serializers import SurveyVoteApiSerializer
+
+
+def submit_survey(survey):
+    completed_survey = CompletedSurvey(
+        survey=survey,
+        completed_at=timezone.now()
+    )
+    completed_survey.save()
+
+
+
+    pass
 
 
 @extend_schema(
@@ -119,6 +132,7 @@ class AddSurveyVoteApi(APIView):
 
         all_votes = SurveyVote.objects.filter(survey=survey).count()
         if survey.vote_limit and all_votes >= survey.vote_limit:
+            submit_survey(survey=survey)
             return Response({"message": "Max votes reached"}, status=status.HTTP_404_NOT_FOUND)
 
         survey_vote = SurveyVote(survey_option=survey_option, user=request.user, survey=survey)

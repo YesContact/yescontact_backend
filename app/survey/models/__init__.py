@@ -1,4 +1,4 @@
-from .survey import Survey
+from .survey import Survey, CompletedSurvey
 from .comment import Comment
 from .like import Like
 from .comment_like import CommentLike

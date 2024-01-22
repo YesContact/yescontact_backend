@@ -72,3 +72,12 @@ class Survey(models.Model):
     
     def seconds_until_end(self):
         return int((self.end_time - timezone.now()).total_seconds())
+
+
+class CompletedSurvey(models.Model):
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Completed Survey"
+        verbose_name_plural = "Completed Surveys"
