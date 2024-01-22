@@ -1,5 +1,6 @@
 from itertools import groupby
 
+from django.db import transaction
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -12,6 +13,7 @@ from ..serializers import SurveyVoteApiSerializer
 from django.db.models import Max, Sum
 
 
+@transaction.atomic
 def submit_survey(survey):
     # completed_survey = CompletedSurvey(
     #     survey=survey,
@@ -27,6 +29,25 @@ def submit_survey(survey):
             total_price=Sum('amount'))[
             'total_price']
     print(total_price_except_winning_option)
+
+    owner_total = total_price_except_winning_option * 0.2
+    print(owner_total)
+
+    # 20 percent to owner
+    survey.user.wallet += owner_total
+    survey.user.save()
+
+    # 70 percent to winners
+    # total_price_except_winning_option * 0.7
+    all_winners_votes = SurveyVote.objects.filter(survey_option=winning_option).all()
+    for vote in all_winners_votes:
+        vote.user.wallet += vote.amount
+        vote.user.save()
+
+
+
+
+
 
     # options = SurveyOption.objects.filter(survey=survey).all()
     # total = []
@@ -54,6 +75,7 @@ def submit_survey(survey):
     # for price, items in grouped_data.items():
     #     percent_price = (price / total_price) * 100
     #     print(f"Price: {price}, Percentage of Total Price: {percent_price:.2f}%")
+
 
 @extend_schema(
     parameters=[
