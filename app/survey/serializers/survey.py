@@ -6,6 +6,7 @@ from rest_framework.fields import SerializerMethodField
 
 from survey.serializers.survey_option import CreateSurveyOptionApiSerializer, CreateSurveyOptionWithSurveyApiSerializer
 from ..models import Survey, SurveyOption, SurveyView
+from app.tasks import process_survey_start_time, process_survey_end_time
 
 
 class SurveyApiSerializer(serializers.ModelSerializer):
@@ -91,6 +92,9 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
 
         # for option in options:
         #     print(option)
+
+        process_survey_start_time.apply_async(args=[survey.id], countdown=survey.start_time.seconds_until_start())
+        process_survey_end_time.apply_async(args=[survey.id], countdown=survey.end_time.seconds_until_end())
 
         return survey
 

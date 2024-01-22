@@ -112,24 +112,20 @@ class SurveyDetailView(RetrieveAPIView):
     #         if survey_options < 2:
     #             raise ValidationError('Options for survey are less than the minimum 2')
 
-            # if survey.paid:
-            #     if not survey.cost and not cost:
-            #         raise ValidationError('Cost specified is required')
-            #
-            #     if not 10 <= cost <= 3000:
-            #         raise ValidationError('Cost must be between 10 and 3000')
+    # if survey.paid:
+    #     if not survey.cost and not cost:
+    #         raise ValidationError('Cost specified is required')
+    #
+    #     if not 10 <= cost <= 3000:
+    #         raise ValidationError('Cost must be between 10 and 3000')
 
-
-
-
-
-        # except Survey.DoesNotExist:
-        #     raise ValidationError('Survey not found')
-        #
-        # if request.method == 'PUT':
-        #     return super().put(request, *args, **kwargs)
-        # elif request.method == 'PATCH':
-        #     return super().patch(request, *args, **kwargs)
+    # except Survey.DoesNotExist:
+    #     raise ValidationError('Survey not found')
+    #
+    # if request.method == 'PUT':
+    #     return super().put(request, *args, **kwargs)
+    # elif request.method == 'PATCH':
+    #     return super().patch(request, *args, **kwargs)
 
     # put = update_survey
     # patch = update_survey
@@ -223,7 +219,7 @@ class StartSurveyApiView(APIView):
 
         if survey.cost > request.user.wallet:
             raise ValidationError('Insufficient balance')
-        
+
         process_survey_start_time.apply_async(args=[survey_id], countdown=survey.start_time.seconds_until_start())
         process_survey_end_time.apply_async(args=[survey_id], countdown=survey.end_time.seconds_until_end())
 
