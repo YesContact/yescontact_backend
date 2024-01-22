@@ -20,6 +20,8 @@ from ..permissions import IsOwnerOrReadOnlyUser, IsVisibleSurvey
 from ..serializers import SurveyApiSerializer, SurveyDetailSerializer, CreateFreeSurveyApiSerializer, \
     CreatePaidSurveyApiSerializer
 
+from app.tasks import process_survey_start_time, process_survey_end_time
+
 
 @extend_schema(
     parameters=[
@@ -221,5 +223,8 @@ class StartSurveyApiView(APIView):
 
         if survey.cost > request.user.wallet:
             raise ValidationError('Insufficient balance')
+        
+        process_survey_start_time.apply_async(args=[survey_id], countdown=survey.start_time.seconds_until_start())
+        process_survey_end_time.apply_async(args=[survey_id], countdown=survey.end_time.seconds_until_end())
 
         return Response({"message": "POST request processed"}, status=status.HTTP_200_OK)

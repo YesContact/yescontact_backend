@@ -67,3 +67,8 @@ class Survey(models.Model):
             date_object = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
             return date_object >= self.start_time
 
+    def seconds_until_start(self):
+        return int((self.start_time - timezone.now()).total_seconds())
+    
+    def seconds_until_end(self):
+        return int((self.end_time - timezone.now()).total_seconds())

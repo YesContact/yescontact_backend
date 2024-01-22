@@ -62,7 +62,7 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
             "visibility",
             "image",
             "options",
-            # "view_count",
+            "visibility",
         ]
 
     def validate_image(self, value):
@@ -119,7 +119,7 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
             "visibility",
             "image",
             "options",
-            # "view_count",
+            "visibility",
 
         ]
 
