@@ -67,8 +67,9 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         ]
 
     def validate_image(self, value):
-        if value.size > self.FILE_MAX_SIZE:
-            raise ValidationError("Image size must be less than 2MB")
+        if value:
+            if value.size > self.FILE_MAX_SIZE:
+                raise ValidationError("Image size must be less than 2MB")
         return value
 
     @transaction.atomic
@@ -93,8 +94,8 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
         # for option in options:
         #     print(option)
 
-        process_survey_start_time.apply_async(args=[survey.id], countdown=survey.start_time.seconds_until_start())
-        process_survey_end_time.apply_async(args=[survey.id], countdown=survey.end_time.seconds_until_end())
+        # process_survey_start_time.apply_async(args=[survey.id], countdown=survey.start_time.seconds_until_start())
+        # process_survey_end_time.apply_async(args=[survey.id], countdown=survey.end_time.seconds_until_end())
 
         return survey
 
@@ -129,6 +130,8 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
 
     def validate_image(self, value):
         max_size = 4 * 1024 * 1024
+        if not value:
+            raise ValidationError("Provide option image")
         if value.size > max_size:
             raise ValidationError("Image size must be less than 4MB")
         return value

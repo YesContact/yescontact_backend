@@ -16,7 +16,7 @@ class Survey(models.Model):
 
     title = models.CharField(max_length=300, null=False)
     description = models.CharField(max_length=1000, null=False)
-    image = models.ImageField(upload_to='uploads/surveys/', null=False, default='uploads/surveys/default.png')
+    image = models.ImageField(upload_to='uploads/surveys/', null=True, default='uploads/surveys/default.png')
 
     paid = models.BooleanField(default=False)
     payment = models.BooleanField(default=False)
