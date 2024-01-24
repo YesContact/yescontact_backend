@@ -1,11 +1,12 @@
 from django.db import transaction
+from django.db.models import Count
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
 from survey.serializers.survey_option import CreateSurveyOptionApiSerializer, CreateSurveyOptionWithSurveyApiSerializer
-from ..models import Survey, SurveyOption, SurveyView
+from ..models import Survey, SurveyOption, SurveyView, SurveyVote
 from app.tasks import process_survey_start_time, process_survey_end_time
 
 
@@ -13,6 +14,7 @@ class SurveyApiSerializer(serializers.ModelSerializer):
     # view_count = serializers.SerializerMethodField(source='get_view_count', read_only=True)
     options = SerializerMethodField()
     views_count = serializers.SerializerMethodField()
+    stats = serializers.SerializerMethodField()
 
     def get_options(self, obj):
         from . import SurveyOptionApiSerializer
@@ -23,6 +25,22 @@ class SurveyApiSerializer(serializers.ModelSerializer):
 
     def get_views_count(self, obj):
         return SurveyView.objects.filter(survey=obj).count()
+
+    def get_stats(self, obj: Survey):
+        if obj.check_completed:
+            all_options = SurveyOption.objects.filter(survey=obj).all()
+            votes_count_per_option = SurveyVote.objects.filter(
+                survey_option__in=all_options).values('survey_option').annotate(
+                count=Count('id'))
+            total_votes = SurveyVote.objects.filter(survey_option__in=all_options).count()
+
+            result_array = [{'option_id': vote.get('survey_option'),
+                             'percentage': (vote.get('count') / total_votes) * 100} for vote in
+                            votes_count_per_option]
+            return result_array
+        else:
+            return None
+
 
     class Meta:
         model = Survey
