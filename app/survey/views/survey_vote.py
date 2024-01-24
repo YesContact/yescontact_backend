@@ -40,9 +40,12 @@ def submit_survey(survey):
     # 70 percent to winners
     # total_price_except_winning_option * 0.7
     all_winners_votes = SurveyVote.objects.filter(survey_option=winning_option).all()
+    users = []
     for vote in all_winners_votes:
-        vote.user.wallet += vote.amount
-        vote.user.save()
+        if vote.user not in users:
+            vote.user.wallet += vote.amount * 0.7
+            vote.user.save()
+            users.append(vote.user)
 
     # options = SurveyOption.objects.filter(survey=survey).all()
     # total = []
