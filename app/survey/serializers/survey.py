@@ -149,7 +149,7 @@ class CreatePaidSurveyApiSerializer(serializers.ModelSerializer):
     def validate_image(self, value):
         max_size = 4 * 1024 * 1024
         if not value:
-            raise ValidationError("Provide option image")
+            return value
         if value.size > max_size:
             raise ValidationError("Image size must be less than 4MB")
         return value

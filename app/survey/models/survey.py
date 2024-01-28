@@ -49,7 +49,6 @@ class Survey(models.Model):
         ("contact", "Contact"),
     ])
 
-
     class Meta:
         verbose_name = "Survey"
         verbose_name_plural = "Surveys"
@@ -69,7 +68,7 @@ class Survey(models.Model):
 
     def seconds_until_start(self):
         return int((self.start_time - timezone.now()).total_seconds())
-    
+
     def seconds_until_end(self):
         return int((self.end_time - timezone.now()).total_seconds())
 

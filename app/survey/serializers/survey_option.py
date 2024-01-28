@@ -16,6 +16,14 @@ class SurveyOptionApiSerializer(serializers.ModelSerializer):
 class CreateSurveyOptionWithSurveyApiSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=True, allow_null=True)
 
+    def validate_image(self, value):
+        max_size = 4 * 1024 * 1024
+        if not value:
+            raise ValidationError("Provide option image")
+        if value.size > max_size:
+            raise ValidationError("Image size must be less than 4MB")
+        return value
+
     class Meta:
         model = SurveyOption
         # fields = '__all__'
