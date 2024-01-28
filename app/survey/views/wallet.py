@@ -8,12 +8,12 @@ from survey.serializers import WalletIncreaseSerializer, JetonConverterSerialize
 
 
 @extend_schema(
-        responses={
-            200: OpenApiResponse(response={"description": "Success", "example": {"jeton": "10000"}},
-                                 description="Success"),
-        },
-        tags=['Api Wallet']
-    )
+    responses={
+        200: OpenApiResponse(response={"description": "Success", "example": {"jeton": "10000"}},
+                             description="Success"),
+    },
+    tags=['Api Wallet']
+)
 class WalletIncreaseView(generics.CreateAPIView):
     serializer_class = WalletIncreaseSerializer
     permission_classes = [IsAuthenticated]
@@ -35,15 +35,15 @@ class WalletIncreaseView(generics.CreateAPIView):
 
 
 @extend_schema(
-        responses={
-            200: OpenApiResponse(response={"description": "Success", "example": {"jeton": "10000",
-                                                                                 "our_commission": "1%",
-                                                                                 "company_commission": "2",
-                                                                                 "total": "9900"}},
-                                 description="Success"),
-        },
-        tags=['Api Wallet']
-    )
+    responses={
+        200: OpenApiResponse(response={"description": "Success", "example": {"jeton": "10000",
+                                                                             "our_commission": "1%",
+                                                                             "company_commission": "2",
+                                                                             "total": "9900"}},
+                             description="Success"),
+    },
+    tags=['Api Wallet']
+)
 class JetonConverterView(generics.CreateAPIView):
     serializer_class = JetonConverterSerializer
 
@@ -81,3 +81,20 @@ class JetonConverterView(generics.CreateAPIView):
     # )
     # def get(self):
     #     pass
+
+
+@extend_schema(
+    responses={
+        200: OpenApiResponse(response={"description": "Success", "example": {'wallet': '0'}},
+                             description="Success"),
+    },
+    tags=['Api Wallet']
+)
+class GetUserWalletView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        wallet_value = user.wallet if hasattr(user, 'wallet') else None
+        return Response({'wallet': wallet_value})
