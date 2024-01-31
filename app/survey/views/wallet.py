@@ -27,11 +27,11 @@ class WalletIncreaseView(generics.CreateAPIView):
         MULTIPLIER_CONSTANT = 10
 
         result = amount * MULTIPLIER_CONSTANT
-        total_result = result - (result * 0.03)
-        request.user.wallet += total_result
+        # total_result = result - (result * 0.03)
+        request.user.wallet += result
         request.user.save()
 
-        return Response({"jeton": total_result}, status=status.HTTP_200_OK)
+        return Response({"jeton": result}, status=status.HTTP_200_OK)
 
 
 @extend_schema(
