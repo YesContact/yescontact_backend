@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
@@ -12,15 +13,23 @@ User = get_user_model()
 class TheNumbersOnMyPhone(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = (IsAuthenticated,)
-    serializer_class = TheNumbersOnMyPhoneSerializer
+    serializer_class = TheNumbersOnMyPhoneSerializer(many=True)
 
+    @extend_schema(
+        request=TheNumbersOnMyPhoneSerializer(many=True),
+        responses={status.HTTP_201_CREATED: TheNumbersOnMyPhoneSerializer(many=True)},
+    )
     def list(self, request):
         user = request.user
 
         phones = Contact.objects.filter(user=user)
         serializer = TheNumbersOnMyPhoneSerializer(phones, many=True)
         return Response(serializer.data)
-    
+
+    @extend_schema(
+        request=TheNumbersOnMyPhoneSerializer(many=True),
+        responses={status.HTTP_201_CREATED: TheNumbersOnMyPhoneSerializer(many=True)},
+    )
     def create(self, request):
         user = request.user
         data = request.data  # Assuming data is a list of dictionaries
