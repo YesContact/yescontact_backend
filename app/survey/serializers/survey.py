@@ -109,6 +109,9 @@ class CreateFreeSurveyApiSerializer(serializers.ModelSerializer):
 
                 SurveyOption.objects.create(survey=survey, **option_data)
 
+        survey.status = 'active'
+        survey.save()
+
         # for option in options:
         #     print(option)
 
