@@ -16,16 +16,19 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = ContactSerializer
 
+    # @extend_schema(
+    #     responses={
+    #         200: OpenApiResponse(
+    #             response={
+    #                 "description": "Success",
+    #                 "example": {"full_name": "Contact's full name"},
+    #             },
+    #             description="Success",
+    #         ),
+    #     }
+    # )
     @extend_schema(
-        responses={
-            200: OpenApiResponse(
-                response={
-                    "description": "Success",
-                    "example": {"full_name": "Contact's full name"},
-                },
-                description="Success",
-            ),
-        }
+        responses={status.HTTP_200_OK: ContactSerializer(many=True)},
     )
     def list(self, request):
         user = request.user
@@ -36,7 +39,11 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        contacts = Contact.objects.filter(full_name__icontains=user.full_name)
+
+
+        # print(user.phone_number)
+        # contacts = Contact.objects.filter(full_name__icontains=user.full_name)
+        contacts = Contact.objects.filter(phone_number=user.phone_number)
         serializer = ContactSerializer(contacts, many=True)
 
         phone_number_mapping = self.get_phone_number_mapping()
