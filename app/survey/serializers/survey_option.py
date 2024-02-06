@@ -1,13 +1,23 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import FileField
+from rest_framework.fields import FileField, SerializerMethodField
 
-from ..models import SurveyOption, Survey
+from survey.serializers.survey_vote import SurveyVoteApiSerializer
+from ..models import SurveyOption, Survey, SurveyVote
 
 
 class SurveyOptionApiSerializer(serializers.ModelSerializer):
     # options = serializers.SerializerMethodField(source='get_options', read_only=True)
+    my_vote = SerializerMethodField()
+
+    def get_my_vote(self, obj):
+        vote = SurveyVote.objects.filter(survey_option=obj, user=self.context.get('request').user).first()
+        if not vote:
+            return None
+        serializer = SurveyVoteApiSerializer(vote, context={'request': self.context.get('request')})
+        return serializer.data
+
     class Meta:
         model = SurveyOption
         fields = '__all__'

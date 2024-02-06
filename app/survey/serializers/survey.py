@@ -8,6 +8,7 @@ from rest_framework.fields import SerializerMethodField
 from survey.serializers.survey_option import CreateSurveyOptionApiSerializer, CreateSurveyOptionWithSurveyApiSerializer
 from ..models import Survey, SurveyOption, SurveyView, SurveyVote
 from app.tasks import process_survey_start_time, process_survey_end_time
+from survey.serializers.survey_option import SurveyOptionApiSerializer
 
 
 class SurveyApiSerializer(serializers.ModelSerializer):
@@ -17,10 +18,10 @@ class SurveyApiSerializer(serializers.ModelSerializer):
     stats = serializers.SerializerMethodField()
 
     def get_options(self, obj):
-        from . import SurveyOptionApiSerializer
+        request = self.context.get('request')
 
         options = SurveyOption.objects.filter(survey=obj).all()
-        serializer = SurveyOptionApiSerializer(options, many=True)
+        serializer = SurveyOptionApiSerializer(options, many=True, context={'request': request})
         return serializer.data
 
     def get_views_count(self, obj):
