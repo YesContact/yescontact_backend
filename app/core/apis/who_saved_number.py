@@ -46,6 +46,7 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
         contacts = Contact.objects.filter(phone_number=user.phone_number)
         serializer = ContactSerializer(contacts, many=True)
 
+
         phone_number_mapping = self.get_phone_number_mapping()
         # print(phone_number_mapping)
 
@@ -59,8 +60,8 @@ class WhoSavedMNViewSet(viewsets.ViewSet):
                         {
                             "id": contact["id"],
                             "phone_number": contact_phone_number,
-                            "full_name": contact["full_name"],
-                            "user": contact_user,
+                            "full_name": contact_user,
+                            # "user": contact_user,
                         }
                     )
             except Contact.DoesNotExist:
