@@ -159,7 +159,10 @@ class AddSurveyVoteApi(APIView):
         except Survey.DoesNotExist:
             return Response({"message": "Survey not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        print(survey.check_completed)
+        survey_options = SurveyOption.objects.filter(survey=survey).all()
+        if SurveyVote.objects.filter(survey_option__in=survey_options, user=request.user).exists():
+            return Response({"message": "Vote is already added"}, status=status.HTTP_404_NOT_FOUND)
+
         if survey.check_completed:
             return Response({"message": "Survey is completed"}, status=status.HTTP_404_NOT_FOUND)
 
