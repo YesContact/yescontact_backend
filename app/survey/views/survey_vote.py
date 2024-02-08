@@ -148,7 +148,7 @@ class AddSurveyVoteApi(APIView):
     # )
     def post(self, request, *args, **kwargs):
         survey_option_id = self.request.query_params.get('survey_option_id')
-        amount = self.request.query_params.get('amount')
+        amount = self.request.query_params.get('amount') or 0
         try:
             survey_option = SurveyOption.objects.get(id=survey_option_id)
         except SurveyOption.DoesNotExist:
