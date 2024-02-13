@@ -10,6 +10,7 @@ from ..models import SurveyOption, Survey, SurveyVote
 class SurveyOptionApiSerializer(serializers.ModelSerializer):
     # options = serializers.SerializerMethodField(source='get_options', read_only=True)
     my_vote = SerializerMethodField()
+    votes_count = SerializerMethodField()
 
     def get_my_vote(self, obj):
         vote = SurveyVote.objects.filter(survey_option=obj, user=self.context.get('request').user).first()
@@ -17,6 +18,9 @@ class SurveyOptionApiSerializer(serializers.ModelSerializer):
             return None
         serializer = SurveyVoteApiSerializer(vote, context={'request': self.context.get('request')})
         return serializer.data
+
+    def get_votes_count(self, obj):
+        return SurveyVote.objects.filter(survey_option=obj).count()
 
     class Meta:
         model = SurveyOption
